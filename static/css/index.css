@@ -1,0 +1,86 @@
+body{
+    background-color: rgb(253, 164, 142);
+}
+
+h1{
+    text-align: center;
+    color: rgb(253, 164, 142);
+}
+
+.div2{
+    background-color: rgb(136, 76, 220);
+    text-align: center;
+    margin-left: 350px;
+    margin-right: 350px;
+    border-radius: 15px;
+}
+
+.div1{
+    background-color: rgb(99, 58, 156);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.botones{
+    padding: 10px 60px;
+    border: none;
+    background-color: rgb(253, 164, 142);
+    color: rgb(99, 58, 156);
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+
+}
+
+.botones:hover{
+    background-color: rgb(225, 141, 120);
+}
+
+.botones:active{
+    background-color: rgb(180, 112, 95);
+}
+
+.bus1{
+    margin-left: 150px;
+}
+
+.bus2{
+    margin-left: 50px;
+}
+
+table, th, td {
+  border:1px solid black;
+}
+
+.botones1{
+    padding: 10px 30px;
+    border: none;
+    background-color: rgb(253, 164, 142);
+    color: rgb(99, 58, 156);
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-decoration: none;
+    margin-right: 600px;
+    margin-bottom: 30px;
+
+}
+.botones1:hover{
+    background-color: rgb(225, 141, 120);
+}
+
+.botones1:active{
+    background-color: rgb(180, 112, 95);
+}
+
+
+
+.div3{
+    background-color: rgb(136, 76, 220);
+    text-align: center;
+    margin-top: 250px;
+    margin-left: 550px;
+    margin-right: 550px;
+    border-radius: 15px;
+}

@@ -5,18 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>index</title>
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="{%static "css/index.css"%}">
 </head>
 <body>
-    <div>
-        <h1>menu</h1>
-        <button type="button">ver trabajador</button><br><br>
-        <button type="button">ver buses</button><br><br>
-        <button type="button">ver roles</button><br><br>
-        <button type="button">ver estados de bus</button><br><br>
-        <button type="button">asociar rol a trabajador</button><br><br>
-        <button type="button">asignar trabajador a bus</button><br><br>
+    <div class="div2">
+        <div class="div1">
+            <h1>menu</h1>
+        </div>
+        <div>
 
-    </div>
+            <button onclick="location.href='http://127.0.0.1:8000/trabajadores/'" type="button" class="botones">ver trabajador</button><br><br>
+            <button type="button" class="botones">ver buses</button><br><br>
+            <button type="button" class="botones">ver roles</button><br><br>
+            <button type="button" class="botones">ver estados de bus</button><br><br>
+            <button type="button" class="botones">asociar rol a trabajador</button><br><br>
+            <button type="button" class="botones">asignar trabajador a bus</button><br><br>
+            
+        </div>
+        <button onclick="location.href='http://127.0.0.1:8000/login/'" type="button" class="botones1">regresar</button>
+    </div><br><br><br>
+    <img src="{%static "img/bus-hualpen.png"%}" width="30%">
+    <img class="bus1" src="{%static "img/bus1.png"%}" width="25%">
+    <img class="bus2" src="{%static "img/bus-derecha.png"%}" width="30%">
+
 </body>
 </html>
