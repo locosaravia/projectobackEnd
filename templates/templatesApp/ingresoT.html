@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ingresos</title>
+    <link rel="stylesheet" href="{%static "css/index.css"%}">
+</head>
+<body>
+    <div class="div2">
+        <div class="div1">
+            <h1>ingreso trabajador</h1>
+        </div>
+        <div>
+            <form>
+                <label for="fId">ID</label>
+                <input type="text" placeholder="id"><br>
+                <label for="fname">nombre</label>
+                <input type="text" placeholder="nombre"><br>
+                <label for="fapellido">apellido</label>
+                <input type="text" placeholder="apellido"><br>
+                <label for="fdirect">dirección</label>
+                <input type="text" placeholder="dirección"><br>
+                <label for="fcontact">contacto</label>
+                <input type="number" placeholder="contacto"><br>
+                <label for="fedad">edad</label>
+                <input type="date" placeholder="edad"><br>
+            </form><br>
+                <button onclick="location.href='http://127.0.0.1:8000/trabajadores/'" class="botones">regresar</button>
+                <button onclick="location.href='http://127.0.0.1:8000/trabajadores/'" class="botones">subir</button><br><br>
+
+        </div>
+    </div>
+</body>
+</html>

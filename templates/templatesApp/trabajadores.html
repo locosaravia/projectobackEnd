@@ -8,24 +8,43 @@
     <link rel="stylesheet" href="{%static "css/index.css"%}">
 </head>
 <body>
+    <ul>
+        <li><a href="http://127.0.0.1:8000/index/">menu</a></li>
+        <li><a href="http://127.0.0.1:8000/buses/">buses</a></li>
+        <li><a href="http://127.0.0.1:8000/rol/">roles</a></li>
+        <li><a href="">estado bus</a></li>
+        <li><a href="">asignar rol</a></li>
+        <li><a href="">asignar bus</a></li>
+    </ul>
     
     <div class="div2">
         <div class="div1">
-            <h1>hola mundo</h1>
+            <h1>trabajadores</h1>
         </div>
             <table style="width: 100%;">
                 <tr>
-                    <th>id</th>
-                    <th>nombre</th>
-                    <th>apellido</th>
-                    <th>dirección</th>
-                    <th>contacto</th>
-                    <th>edad</th>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Dirección</th>
+                    <th>Contacto</th>
+                    <th>Edad</th>
+                </tr>
+                <tr>    
+                    <td>{{id}}</td>
+                    <td>{{nombre}}</td>
+                    <td>{{apellido}}</td>
+                    <td>{{direccion}}</td>
+                    <td>{{contacto}}</td>
+                    <td>{{edad}}</td>
                 </tr>
                 
-            </table>
+            </table><br><br>
         <div>
-
+            <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">Regresar</button>
+            <button onclick="location.href='http://127.0.0.1:8000/ingresoT/'" class="botones" type="button">Ingresar Trabajador</button>
+            
+            <br><br>
         </div>
 
     </div>

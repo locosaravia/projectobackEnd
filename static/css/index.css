@@ -64,6 +64,7 @@ table, th, td {
     text-decoration: none;
     margin-right: 600px;
     margin-bottom: 30px;
+    text-align: right;
 
 }
 .botones1:hover{
@@ -83,4 +84,56 @@ table, th, td {
     margin-left: 550px;
     margin-right: 550px;
     border-radius: 15px;
+}
+
+
+.input1{
+    padding: 10px;
+    border: 3px solid rgb(136, 76, 220);
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.div4{
+    background-color: rgb(136, 76, 220);
+    text-align: center;
+    margin-top: 250px;
+    margin-left: 300px;
+    margin-right: 300px;
+    border-radius: 15px;
+    
+}
+
+
+.navbar {
+    display: flex;
+    flex-direction: row;
+    background-color: rgb(99, 58, 156);
+    padding: 0;
+    margin: 0 0 30px 0;
+    list-style: none;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.navbar li {
+    flex: 1;
+}
+
+.navbar a {
+    display: block;
+    color: #fff;
+    text-align: center;
+    padding: 16px 0;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.navbar a:hover, .navbar a:focus {
+    background-color: rgb(136, 76, 220);
+    color: rgb(253, 164, 142);
 }

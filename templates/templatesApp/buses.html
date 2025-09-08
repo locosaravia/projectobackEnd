@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{%static "css/index.css"%}">
+</head>
+<body>
+
+    <ul class="navbar">
+        <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
+        <li><a href="http://127.0.0.1:8000/trabajadores/">Trabajadores</a></li>
+        <li><a href="http://127.0.0.1:8000/rol/">Roles</a></li>
+        <li><a href="">Estado Bus</a></li>
+        <li><a href="">Asignar Rol</a></li>
+        <li><a href="">Asignar Bus</a></li>
+    </ul>
+
+        <div class="div2">
+        <div class="div1">
+            <h1>Buses</h1>
+        </div>
+            <table style="width: 100%;">
+                <tr>
+                    <th>Patente</th>
+                    <th>Modelo</th>
+                    <th>Año</th>
+                    <th>Capacidad</th>
+                </tr>
+                <tr>
+                    <td>{{patente}}</td>
+                    <td>{{modelo}}</td>
+                    <td>{{año}}</td>
+                    <td>{{capacidad}}</td>
+
+                </tr>
+                
+            </table><br><br>
+        <div>
+            <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">Regresar</button>
+            <button onclick="location.href='http://127.0.0.1:8000/ingresoB/'" class="botones" type="button">Ingresar Bus</button><br><br>
+            
+    
+</body>
+</html>

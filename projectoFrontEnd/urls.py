@@ -21,7 +21,12 @@ from templatesApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('index/', views.index),
-    path('trabajadores/', views.trabajadores),
-    path('login/',views.login1)
+    path('trabajadores/', views.data1),
+    path('login/',views.login1),
+    path('buses/',views.buses1),
+    path ('ingresoT/',views.ingresot),
+    path ('rol/', views.rol),
+    path('ingresoB/',views.buses)
+
 
 ]
