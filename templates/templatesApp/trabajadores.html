@@ -1,55 +1,73 @@
 <!DOCTYPE html>
-{% load static %}
+{% load static %} <!-- Cargamos las etiquetas de Django para usar archivos estáticos (CSS, imágenes, JS) -->
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"> <!-- Definición de codificación de caracteres -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Para que sea responsive -->
     <title>trabajadores</title>
-    <link rel="stylesheet" href="{%static "css/index.css"%}">
+    
+    <!-- Importamos la hoja de estilos ubicada en /static/css/index.css -->
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
-    <ul>
-        <li><a href="http://127.0.0.1:8000/index/">menu</a></li>
-        <li><a href="http://127.0.0.1:8000/buses/">buses</a></li>
-        <li><a href="http://127.0.0.1:8000/rol/">roles</a></li>
-        <li><a href="">estado bus</a></li>
-        <li><a href="">asignar rol</a></li>
-        <li><a href="">asignar bus</a></li>
+    <!-- Barra de navegación con enlaces a distintas vistas -->
+    <ul class="navbar">
+        <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
+        <li><a href="http://127.0.0.1:8000/buses/">Buses</a></li>
+        <li><a href="http://127.0.0.1:8000/rol/">Roles</a></li>
+        <li><a href="http://127.0.0.1:8000/estadoB/">Estado Bus</a></li>
+        <li><a href="http://127.0.0.1:8000/asignarR/">Asignar Rol</a></li>
+        <li><a href="http://127.0.0.1:8000/asignarB/">Asignar Bus</a></li>
     </ul>
-    
+
+    <!-- Contenedor principal -->
     <div class="div2">
         <div class="div1">
-            <h1>trabajadores</h1>
+            <h1>trabajadores</h1> <!-- Título de la página -->
         </div>
-            <table style="width: 100%;">
-                <tr>
-                    <th>Id</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Dirección</th>
-                    <th>Contacto</th>
-                    <th>Edad</th>
-                </tr>
-                <tr>    
-                    <td>{{id}}</td>
-                    <td>{{nombre}}</td>
-                    <td>{{apellido}}</td>
-                    <td>{{direccion}}</td>
-                    <td>{{contacto}}</td>
-                    <td>{{edad}}</td>
-                </tr>
-                
-            </table><br><br>
+
+        <!-- Tabla con la información de un trabajador -->
+        <table style="width: 100%;">
+            <tr>
+                <!-- Encabezados de la tabla -->
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Dirección</th>
+                <th>Contacto</th>
+                <th>Edad</th>
+            </tr>
+            <tr>    
+                <!-- Celdas que muestran datos pasados desde la vista de Django -->
+                <td>{{id}}</td>
+                <td>{{nombre}}</td>
+                <td>{{apellido}}</td>
+                <td>{{direccion}}</td>
+                <td>{{contacto}}</td>
+                <td>{{edad}}</td>
+            </tr>
+        </table>
+        <br><br>
+
+        <!-- Botones de navegación -->
         <div>
+            <!-- Redirige a la página principal -->
             <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">Regresar</button>
+            
+            <!-- Redirige al formulario para ingresar un nuevo trabajador -->
             <button onclick="location.href='http://127.0.0.1:8000/ingresoT/'" class="botones" type="button">Ingresar Trabajador</button>
             
             <br><br>
         </div>
-
     </div>
 
+    <br><br>
 
-    
+    <!-- Imágenes decorativas de buses (cargadas desde /static/img/) -->
+    <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
+    <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus 1">
+    <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
+
 </body>
 </html>

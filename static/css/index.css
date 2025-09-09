@@ -1,59 +1,98 @@
-body{
+/* ============================
+   🎨 ESTILOS GENERALES DE LA PÁGINA
+   ============================ */
+
+/* Fondo principal */
+body {
     background-color: rgb(253, 164, 142);
 }
 
-h1{
-    text-align: center;
-    color: rgb(253, 164, 142);
+/* Encabezado principal (H1) */
+h1 {
+    text-align: center;                 /* Centrado */
+    color: rgb(253, 164, 142);          /* Mismo color que el fondo → puede ser difícil de leer */
 }
 
-.div2{
+/* ============================
+   📦 CONTENEDORES PRINCIPALES
+   ============================ */
+
+/* Contenedor central (bloque principal) */
+.div2 {
+    background-color: rgb(136, 76, 220); /* Fondo violeta */
+    text-align: center;                  /* Contenido centrado */
+    margin-left: 350px;                  /* Márgenes laterales fijos */
+    margin-right: 350px;
+    border-radius: 15px;                 /* Bordes redondeados */
+}
+
+/* Parte superior del contenedor */
+.div1 {
+    background-color: rgb(99, 58, 156);  /* Fondo violeta oscuro */
+    border-top-left-radius: 15px;        /* Bordes redondeados arriba izquierda */
+    border-top-right-radius: 15px;       /* Bordes redondeados arriba derecha */
+}
+
+/* Contenedor alternativo (centrado con márgenes grandes) */
+.div3 {
     background-color: rgb(136, 76, 220);
     text-align: center;
-    margin-left: 350px;
-    margin-right: 350px;
+    margin-top: 250px;                   /* Gran espacio arriba */
+    margin-left: 550px;
+    margin-right: 550px;
     border-radius: 15px;
 }
 
-.div1{
-    background-color: rgb(99, 58, 156);
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+
+.div3 input[type="text"],
+.div3 input[type="password"] {
+    width: 260px;        /* 🔧 ajusta a 220px, 280px, etc. */
+    max-width: 90%;
+    padding: 8px 10px;
+    font-size: 14px;
+    display: block;
+    margin: 10px auto;
+    box-sizing: border-box;
 }
 
-.botones{
-    padding: 10px 60px;
-    border: none;
-    background-color: rgb(253, 164, 142);
-    color: rgb(99, 58, 156);
-    border-radius: 10px;
-    cursor: pointer;
-    text-transform: uppercase;
-    text-decoration: none;
-
+/* Otro contenedor alternativo */
+.div4 {
+    background-color: rgb(136, 76, 220);
+    text-align: center;
+    margin-top: 250px;
+    margin-left: 300px;
+    margin-right: 300px;
+    border-radius: 15px;
 }
 
-.botones:hover{
+/* ============================
+   🔘 BOTONES
+   ============================ */
+
+/* Botón principal */
+.botones {
+    padding: 10px 60px;                  /* Tamaño del botón */
+    border: none;                        /* Sin borde */
+    background-color: rgb(253, 164, 142);/* Fondo rosado */
+    color: rgb(99, 58, 156);             /* Texto violeta oscuro */
+    border-radius: 10px;                 /* Bordes redondeados */
+    cursor: pointer;                     /* Manito al pasar encima */
+    text-transform: uppercase;           /* Texto en mayúsculas */
+    text-decoration: none;               /* Sin subrayado */
+}
+
+/* Botón al pasar el mouse */
+.botones:hover {
     background-color: rgb(225, 141, 120);
 }
 
-.botones:active{
+/* Botón al hacer clic */
+.botones:active {
     background-color: rgb(180, 112, 95);
 }
 
-.bus1{
-    margin-left: 150px;
-}
-
-.bus2{
-    margin-left: 50px;
-}
-
-table, th, td {
-  border:1px solid black;
-}
-
-.botones1{
+/* Variante de botón (más estrecho y alineado distinto) */
+.botones1 {
     padding: 10px 30px;
     border: none;
     background-color: rgb(253, 164, 142);
@@ -62,78 +101,94 @@ table, th, td {
     cursor: pointer;
     text-transform: uppercase;
     text-decoration: none;
-    margin-right: 600px;
-    margin-bottom: 30px;
-    text-align: right;
-
+    margin-right: 600px;                /* Lo empuja hacia la izquierda */
+    margin-bottom: 30px;                /* Espaciado inferior */
+    text-align: right;                  /* Texto alineado a la derecha */
 }
-.botones1:hover{
+
+/* Variante hover */
+.botones1:hover {
     background-color: rgb(225, 141, 120);
 }
 
-.botones1:active{
+/* Variante activa */
+.botones1:active {
     background-color: rgb(180, 112, 95);
 }
 
+/* ============================
+   🚌 ELEMENTOS PERSONALIZADOS
+   ============================ */
 
-
-.div3{
-    background-color: rgb(136, 76, 220);
-    text-align: center;
-    margin-top: 250px;
-    margin-left: 550px;
-    margin-right: 550px;
-    border-radius: 15px;
+/* Ajuste de margen para elementos (probablemente imágenes) */
+.bus1 {
+    margin-left: 150px;
 }
 
+.bus2 {
+    margin-left: 50px;
+}
 
-.input1{
+/* ============================
+   📊 TABLAS
+   ============================ */
+
+table, th, td {
+  border: 1px solid black;              /* Bordes negros */
+  /* Se recomienda border-collapse: collapse; y padding para mejorar la visualización */
+}
+
+/* ============================
+   🔡 CAMPOS DE ENTRADA
+   ============================ */
+
+.input1 {
     padding: 10px;
-    border: 3px solid rgb(136, 76, 220);
-    border-radius: 4px;
+    border: 2px solid rgb(136, 76, 220);
+    border-radius: 6px;
     font-size: 16px;
-    width: 100%;
-}
-
-.div4{
-    background-color: rgb(136, 76, 220);
-    text-align: center;
-    margin-top: 250px;
-    margin-left: 300px;
-    margin-right: 300px;
-    border-radius: 15px;
-    
+    width: 20px;       /* ✅ Ahora ocupan el 30% del contenedor */
+    margin: 10px;
+    display: inline-block;
 }
 
 
-.navbar {
-    display: flex;
-    flex-direction: row;
-    background-color: rgb(99, 58, 156);
-    padding: 0;
-    margin: 0 0 30px 0;
-    list-style: none;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+/* ============================
+   📑 ESTILOS PARA LA BARRA DE NAVEGACIÓN
+   ============================ */
+
+/* Barra principal (el <ul> con clase .navbar) */
+ul.navbar {
+    display: flex;                          /* Muestra los elementos en fila (horizontal) */
+    background-color: rgb(99, 58, 156);     /* Fondo violeta oscuro */
+    border-radius: 15px;                    /* Bordes redondeados */
+    overflow: hidden;                       /* Oculta contenido que sobresalga */
+    margin: 0 0 30px 0;                     /* Margen inferior (separación con lo de abajo) */
+    padding: 0;                             /* Sin relleno interno */
+    list-style: none;                       /* Quita las viñetas de la lista */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Sombra suave debajo */
 }
 
-.navbar li {
-    flex: 1;
+/* Cada <li> dentro de la barra de navegación */
+ul.navbar li {
+    flex: 1;                                /* Hace que todos los <li> ocupen el mismo ancho */
 }
 
-.navbar a {
-    display: block;
-    color: #fff;
-    text-align: center;
-    padding: 16px 0;
-    text-decoration: none;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: background 0.2s, color 0.2s;
+/* Estilos para los enlaces <a> dentro de la barra */
+ul.navbar li a {
+    display: block;                         /* Hace que el enlace se comporte como un bloque */
+    color: #fff;                            /* Texto blanco */
+    text-align: center;                     /* Centra el texto horizontalmente */
+    padding: 16px 0;                        /* Relleno vertical (alto del botón) */
+    text-decoration: none;                  /* Quita el subrayado típico de los links */
+    font-weight: 600;                       /* Texto más grueso */
+    letter-spacing: 1px;                    /* Espaciado entre letras */
+    transition: background 0.2s, color 0.2s;/* Transición suave en hover/focus */
 }
 
-.navbar a:hover, .navbar a:focus {
-    background-color: rgb(136, 76, 220);
-    color: rgb(253, 164, 142);
+/* Cuando el usuario pasa el mouse o enfoca un enlace */
+ul.navbar li a:hover, 
+ul.navbar li a:focus {
+    background-color: rgb(136, 76, 220);    /* Cambia a violeta medio */
+    color: rgb(253, 164, 142);              /* Texto rosado */
 }

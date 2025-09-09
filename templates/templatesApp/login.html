@@ -1,24 +1,44 @@
 <!DOCTYPE html>
-{% load static %}
+{% load static %} 
+<!-- Permite usar el tag {% static %} de Django para cargar archivos estáticos (CSS, imágenes, JS) -->
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="{%static "css/index.css"%}">
+
+    <!-- Enlaza la hoja de estilos CSS ubicada en la carpeta static/css -->
+    <link rel="stylesheet" href="{% static "css/index.css" %}">
 </head>
 <body>
+    <!-- Contenedor principal de la sección de login -->
     <div class="div3">
+
+        <!-- Encabezado de bienvenida -->
         <div class="div1">
             <h1>welcome</h1>
         </div>
+
+        <!-- Inputs de usuario y contraseña -->
         <div>
             <input type="text" class="input1" placeholder="usuario"><br><br>
-            <input type="password" placeholder="contraseña">
-            
+            <input type="password" class="input1" placeholder="contraseña"><br><br>
         </div>
-        <br><br><button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones">login</button><br><br>
+
+        <!-- Botón que redirige a la ruta /index/ al hacer clic -->
+        <br><br>
+        <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones">
+            login
+        </button>
+        <br><br>
     </div>
-    
+
+    <!-- Imágenes con rutas desde la carpeta static/img -->
+    <br><br>
+    <img src="{% static "img/bus-hualpen.png" %}" width="30%">
+    <img class="bus1" src="{% static "img/bus1.png" %}" width="25%">
+    <img class="bus2" src="{% static "img/bus-derecha.png" %}" width="30%">
+
 </body>
 </html>

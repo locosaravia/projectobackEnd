@@ -1,28 +1,28 @@
 <!DOCTYPE html>
-{% load static %} <!-- Importa la etiqueta de Django para gestionar archivos estáticos (CSS, JS, imágenes) -->
+{% load static %} <!-- Carga la etiqueta de Django para trabajar con archivos estáticos (CSS, imágenes, JS) -->
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> <!-- Define la codificación de caracteres como UTF-8, útil para acentos y ñ -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace la página responsive (adaptable a móviles y tablets) -->
-    <title>ingresos</title> <!-- Título que aparecerá en la pestaña del navegador -->
+    <meta charset="UTF-8"> <!-- Codificación UTF-8 para soportar acentos y caracteres especiales -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que la página sea adaptable a móviles -->
+    <title>ingresos</title> <!-- Título de la pestaña del navegador -->
 
-    <!-- Enlace a la hoja de estilos ubicada en /static/css/index.css -->
+    <!-- Importa la hoja de estilos desde la carpeta static/css -->
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
-    <!-- Sección principal (contenedor) -->
+    <!-- Contenedor principal -->
     <div class="div2">
 
-        <!-- Cabecera de la página -->
+        <!-- Encabezado -->
         <div class="div1">
-            <h1>cambio Rol</h1> <!-- Encabezado. ⚠️ Aquí realmente se asigna un bus, sería mejor renombrarlo -->
+            <h1>cambio Rol</h1> <!-- Título de la sección (aunque aquí realmente se asigna un bus) -->
         </div>
 
-        <!-- Formulario de selección de bus -->
+        <!-- Formulario de asignación de bus -->
         <div>
             <form>
-                <!-- Etiqueta y lista desplegable para seleccionar un bus -->
+                <!-- Menú desplegable para seleccionar un bus -->
                 <label for="bus">Bus</label>
                 <select name="bus" id="bus">
                     <option value="A1 P2 23">A1 P2 23</option>
@@ -34,7 +34,7 @@
             <br>
 
             <!-- Botones de acción -->
-            <!-- Ambos solo redirigen a /asignarB/, no envían datos del formulario -->
+            <!-- Ambos redirigen a la misma ruta /asignarB/, pero no guardan datos todavía -->
             <button onclick="location.href='http://127.0.0.1:8000/asignarB/'" class="botones">asignar bus</button>
             <button onclick="location.href='http://127.0.0.1:8000/asignarB/'" class="botones">Regresar</button>
             <br><br>
@@ -43,7 +43,7 @@
 
     <br><br>
 
-    <!-- Imágenes decorativas -->
+    <!-- Imágenes decorativas cargadas desde la carpeta static/img -->
     <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
     <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus lateral">
     <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">

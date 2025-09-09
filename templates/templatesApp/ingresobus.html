@@ -1,32 +1,61 @@
 <!DOCTYPE html>
-{% load static %}
+{% load static %} <!-- Carga la librería de Django para poder usar archivos estáticos (CSS, imágenes, JS) -->
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ingresos</title>
-    <link rel="stylesheet" href="{%static "css/index.css"%}">
+    <meta charset="UTF-8"> <!-- Codificación de caracteres en UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que la página sea responsive en móviles -->
+    <title>ingresos</title> <!-- Título que aparece en la pestaña del navegador -->
+    
+    <!-- Vincula la hoja de estilos ubicada en /static/css/index.css -->
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
+    <!-- Contenedor principal -->
     <div class="div2">
+        
+        <!-- Encabezado de la página -->
         <div class="div1">
             <h1>ingreso bus</h1>
         </div>
+
+        <!-- Formulario para ingresar datos de un bus -->
         <div>
             <form>
+                <!-- Campo para la patente del bus -->
                 <label for="fId">Patente</label>
                 <input type="text" placeholder="patente"><br>
+                
+                <!-- Campo para la marca del bus -->
                 <label for="fname">marca</label>
                 <input type="text" placeholder="marca"><br>
+                
+                <!-- Campo para el año de fabricación del bus -->
                 <label for="fapellido">año</label>
                 <input type="date"><br>
+                
+                <!-- Campo para la capacidad de pasajeros del bus -->
                 <label for="fdirect">capacidad</label>
                 <input type="number" placeholder="capacidad"><br>
-            </form> <br>
+            </form> 
+            <br>
+
+            <!-- Botón para regresar a la vista de buses -->
             <button onclick="location.href='http://127.0.0.1:8000/buses/'" class="botones">regresar</button>
-            <button onclick="location.href='http://127.0.0.1:8000/buses/'" class="botones">subir</button><br><br>
+            
+            <!-- Botón para "subir" los datos, aunque en este código solo redirige a la lista de buses 
+                 (no guarda información aún) -->
+            <button onclick="location.href='http://127.0.0.1:8000/buses/'" class="botones">subir</button>
+            <br><br>
         </div>
     </div>
+
+    <br><br>
+
+    <!-- Imágenes decorativas de buses cargadas desde la carpeta /static/img/ -->
+    <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
+    <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus lateral">
+    <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
 
 </body>
 </html>

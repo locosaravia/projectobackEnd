@@ -44,3 +44,50 @@ def rol (request):
         "id" : "1",
         "rol" : "conductor"
     }
+    return render(request, 'templatesApp/rol.html', data)
+
+def ingresoR(request):
+    return render(request, 'templatesApp/ingresoR.html')
+
+def estadoB(request):
+    data = {
+        "patente" : "A1 P2 23",
+        "estado" : "en servicio"
+    }
+    return render(request, 'templatesApp/estado_bus.html', data)
+
+def cambiarestado(request):
+    return render(request, 'templatesApp/cambioestado.html')
+
+def asignarR(request):
+    data = {
+        "id_trabajador" : "1",
+        "nombre" : "juan",
+        "apellido" : "saravia",
+        "rol_asignado" : "conductor"
+    }
+    return render(request, 'templatesApp/asignarol.html', data)
+
+def asignarB(request):
+    data = {
+        "id_trabajador" : "1",
+        "nombre" : "juan",
+        "apellido" : "saravia",
+        "bus_asignado" : "A1 P2 23"
+    }
+    return render(request, 'templatesApp/asignarbus.html', data)
+
+def cambiarol(request):
+    return render(request, 'templatesApp/cambiarol.html')
+
+def asignarbus(request):
+    data = {
+        "id_trabajador" : "1",
+        "nombre" : "juan",
+        "apellido" : "saravia",
+        "bus_asignado" : "A1 P2 23"
+    }
+    return render(request, 'templatesApp/asignarbus.html', data)
+
+def cambiarbus(request):
+    return render(request, 'templatesApp/cambiarbus.html')

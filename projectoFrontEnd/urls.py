@@ -26,7 +26,13 @@ urlpatterns = [
     path('buses/',views.buses1),
     path ('ingresoT/',views.ingresot),
     path ('rol/', views.rol),
-    path('ingresoB/',views.buses)
-
-
+    path('ingresoB/',views.buses),
+    path('', views.index, name='home'),
+    path('ingresoR/', views.ingresoR),
+    path('estadoB/', views.estadoB),
+    path('cambioestado/', views.cambiarestado),
+    path('asignarR/', views.asignarR),
+    path('cambiarol/', views.cambiarol),
+    path('asignarB/', views.asignarbus),
+    path('cambiarbus/', views.cambiarbus),
 ]

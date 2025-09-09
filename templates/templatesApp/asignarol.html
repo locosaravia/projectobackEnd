@@ -1,62 +1,62 @@
 <!DOCTYPE html>
-{% load static %} <!-- Importa las etiquetas de Django para trabajar con archivos estáticos (CSS, JS, imágenes) -->
+{% load static %} <!-- Importa la etiqueta de Django para usar archivos estáticos (CSS, imágenes, JS) -->
 
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> <!-- Soporte para caracteres especiales (tildes, ñ, etc.) -->
-    <meta name="viewport" content="width=7, initial-scale=1.0"> <!-- Configuración adaptable a pantallas (aunque width=7 parece un error tipográfico, debería ser width=device-width) -->
+    <meta charset="UTF-8"> <!-- Codificación UTF-8 para permitir caracteres especiales como tildes y ñ -->
+    <meta name="viewport" content="width=7, initial-scale=1.0"> <!-- Configuración de vista adaptable (aunque width=7 parece un error tipográfico) -->
     <title>Document</title> <!-- Título de la pestaña en el navegador -->
 
-    <!-- Importación de la hoja de estilos personalizada -->
+    <!-- Vinculación con la hoja de estilos personalizada en /static/css/index.css -->
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
     
-    <!-- Barra de navegación -->
+    <!-- Barra de navegación principal -->
     <ul class="navbar">
         <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
         <li><a href="http://127.0.0.1:8000/trabajadores/">Trabajadores</a></li>
         <li><a href="http://127.0.0.1:8000/rol/">Roles</a></li>
         <li><a href="http://127.0.0.1:8000/estadoB/">Estado Bus</a></li>
-        <li><a href="http://127.0.0.1:8000/asignarR/">Asignar Rol</a></li>
+        <li><a href="http://127.0.0.1:8000/asignarB/">Asignar Bus</a></li>
         <li><a href="http://127.0.0.1:8000/buses">Buses</a></li>
     </ul>
 
     <!-- Contenedor principal -->
     <div class="div2">
 
-        <!-- Encabezado -->
+        <!-- Encabezado de sección -->
         <div class="div1">
-            <h1>estado</h1> <!-- Título de la sección -->
+            <h1>estado</h1> <!-- Aquí se muestran los roles de trabajadores -->
         </div>
 
-        <!-- Tabla de estado de bus asignado -->
+        <!-- Tabla de datos -->
         <table style="width: 100%;">
             <tr>
-                <th>id trabajador</th> <!-- Identificador del trabajador -->
-                <th>Bus Asignado</th> <!-- Bus que se le ha asignado -->
+                <th>id</th> <!-- Identificador del trabajador -->
+                <th>Rol</th> <!-- Rol asignado -->
             </tr>
             <tr>
-                <!-- Variables dinámicas enviadas desde Django -->
+                <!-- Variables de Django que mostrarán los valores dinámicos desde la vista -->
                 <td>{{ id_trabajador }}</td>
-                <td>{{ bus_asignado }}</td>
+                <td>{{ rol_asignado }}</td>
             </tr>
         </table>
         <br><br>
 
         <!-- Botones de acción -->
         <div>
-            <!-- Vuelve al menú principal -->
+            <!-- Redirige al menú principal -->
             <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">Regresar</button>
-            
-            <!-- Redirige a la vista donde se puede cambiar el bus asignado -->
-            <button onclick="location.href='http://127.0.0.1:8000/cambiarbus/'" class="botones" type="button">cambiar bus</button>
-            <br><br> 
+
+            <!-- Redirige a la página para cambiar el rol de un trabajador -->
+            <button onclick="location.href='http://127.0.0.1:8000/cambiarol/'" class="botones" type="button">cambiar rol</button>
+            <br><br>
         </div>
     </div>
-    <br><br><br> 
+    <br><br><br>
 
-    <!-- Imágenes decorativas de buses -->
+    <!-- Imágenes decorativas -->
     <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
     <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus lateral">
     <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
