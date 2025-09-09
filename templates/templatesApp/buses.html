@@ -1,52 +1,69 @@
 <!DOCTYPE html>
-{% load static %} <!-- Importa la etiqueta de Django para gestionar archivos estáticos (CSS, JS, imágenes) -->
-
+{% load static %} <!-- Carga la etiqueta de archivos estáticos de Django -->
 <html lang="en">
 <head>
-    <meta charset="UTF-8"> <!-- Define la codificación de caracteres como UTF-8, útil para acentos y ñ -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace la página responsive (adaptable a móviles y tablets) -->
-    <title>ingresos</title> <!-- Título que aparecerá en la pestaña del navegador -->
+    <meta charset="UTF-8"> <!-- Permite caracteres especiales (ñ, tildes, etc.) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive en móviles -->
+    <title>Document</title> <!-- Título de la pestaña del navegador -->
 
-    <!-- Enlace a la hoja de estilos ubicada en /static/css/index.css -->
+    <!-- Vinculación con hoja de estilos CSS ubicada en static/css/index.css -->
+    <!-- ⚠️ Nota: en Django se recomienda usar comillas simples -->
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
-    <!-- Sección principal (contenedor) -->
-    <div class="div2">
 
-        <!-- Cabecera de la página -->
-        <div class="div1">
-            <h1>cambio Rol</h1> <!-- Encabezado. ⚠️ Aquí realmente se asigna un bus, sería mejor renombrarlo -->
+    <!-- ======================= NAVBAR ======================= -->
+    <!-- Lista de navegación que lleva a distintas secciones del sistema -->
+    <ul class="navbar">
+        <!-- Enlaces a diferentes vistas (por ahora están con URL fija localhost) -->
+        <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
+        <li><a href="http://127.0.0.1:8000/trabajadores/">Trabajadores</a></li>
+        <li><a href="http://127.0.0.1:8000/rol/">Roles</a></li>
+        <li><a href="http://127.0.0.1:8000/estadoB/">Estado Bus</a></li>
+        <li><a href="http://127.0.0.1:8000/asignarR/">Asignar Rol</a></li>
+        <li><a href="http://127.0.0.1:8000/asignarB/">Asignar Bus</a></li>
+    </ul>
+
+    <!-- ======================= CONTENIDO PRINCIPAL ======================= -->
+    <div class="div2"> <!-- Contenedor principal -->
+        <div class="div1"> <!-- Subcontenedor del título -->
+            <h1>Buses</h1> <!-- Título de la sección -->
         </div>
 
-        <!-- Formulario de selección de bus -->
-        <div>
-            <form>
-                <!-- Etiqueta y lista desplegable para seleccionar un bus -->
-                <label for="bus">Bus</label>
-                <select name="bus" id="bus">
-                    <option value="A1 P2 23">A1 P2 23</option>
-                    <option value="B2 Q3 45">B2 Q3 45</option>
-                    <option value="C3 R4 67">C3 R4 67</option>
-                </select>   
-                <br>
-            </form> 
-            <br>
+        <!-- ======================= TABLA DE DATOS ======================= -->
+        <table style="width: 100%;"> <!-- Tabla que ocupará el 100% del ancho -->
+            <tr>
+                <!-- Encabezados de la tabla -->
+                <th>Patente</th>
+                <th>Modelo</th>
+                <th>Año</th>
+                <th>Capacidad</th>
+            </tr>
+            <!-- Fila con datos de un bus -->
+            <!-- ⚠️ Estas variables se reemplazan dinámicamente con datos enviados desde Django -->
+            <tr>
+                <td>{{patente}}</td> <!-- Número de patente del bus -->
+                <td>{{modelo}}</td>  <!-- Modelo del bus -->
+                <td>{{año}}</td>     <!-- Año de fabricación -->
+                <td>{{capacidad}}</td> <!-- Capacidad de pasajeros -->
+            </tr>
+        </table>
+        <br><br>
 
-            <!-- Botones de acción -->
-            <!-- Ambos solo redirigen a /asignarB/, no envían datos del formulario -->
-            <button onclick="location.href='http://127.0.0.1:8000/asignarB/'" class="botones">asignar bus</button>
-            <button onclick="location.href='http://127.0.0.1:8000/asignarB/'" class="botones">Regresar</button>
+        <!-- ======================= BOTONES DE ACCIÓN ======================= -->
+        <div>
+            <!-- Botón para regresar al menú principal -->
+            <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">
+                Regresar
+            </button>
+
+            <!-- Botón para ir al formulario de ingreso de un nuevo bus -->
+            <button onclick="location.href='http://127.0.0.1:8000/ingresoB/'" class="botones" type="button">
+                Ingresar Bus
+            </button>
             <br><br>
         </div>
     </div>
-
-    <br><br>
-
-    <!-- Imágenes decorativas -->
-    <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
-    <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus lateral">
-    <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
-
+    
 </body>
 </html>
