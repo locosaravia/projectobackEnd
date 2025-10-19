@@ -1,84 +1,264 @@
-<!DOCTYPE html>
-{% load static %} <!-- Cargamos las etiquetas de Django para usar archivos estáticos (CSS, imágenes, JS) -->
+{% extends 'templatesApp/base.html' %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8"> <!-- Definición de codificación de caracteres -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Para que sea responsive -->
-    <title>trabajadores</title>
-    
-    <!-- Importamos la hoja de estilos ubicada en /static/css/index.css -->
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-</head>
-<body>
-    {% if trabajadores %}
-    <!-- Barra de navegación con enlaces a distintas vistas -->
-    <ul class="navbar">
-        <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
-        <li><a href="http://127.0.0.1:8000/buses/">Buses</a></li>
-        <li><a href="http://127.0.0.1:8000/rol/">Roles</a></li>
-        <li><a href="http://127.0.0.1:8000/estadoB/">Estado Bus</a></li>
-        <li><a href="http://127.0.0.1:8000/asignarR/">Asignar Rol</a></li>
-        <li><a href="http://127.0.0.1:8000/asignarB/">Asignar Bus</a></li>
-    </ul>
+{% block title %}Listado de Trabajadores - Sistema de Gestión{% endblock %}
 
-    <!-- Contenedor principal -->
-    <div class="div2">
-        <div class="div1">
-            <h1>trabajadores</h1> <!-- Título de la página -->
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item active">Trabajadores</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-users"></i> Gestión de Trabajadores
+            </h1>
         </div>
 
-        <!-- Tabla con la información de un trabajador -->
-        <table style="width: 100%;">
-            <thead>
-                <tr>
-                    <!-- Encabezados de la tabla -->
-                    <th>Id</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Dirección</th>
-                    <th>Contacto</th>
-                    <th>Edad</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for trabajador in trabajadores %}
-                <tr>    
-                    <!-- Celdas que muestran datos pasados desde la vista de Django -->
-                    <td scope="row">{{trabajador.id}}</td>
-                    <td>{{trabajador.nombre}}</td>
-                    <td>{{trabajador.apellido}}</td>
-                    <td>{{trabajador.direccion}}</td>
-                    <td>{{trabajador.contacto}}</td>
-                    <td>{{trabajador.edad}}</td>
-                </tr>
-                {% endfor %}
-        </tbody>
-        </table>
+        <!-- Búsqueda y Filtros -->
+        <div class="search-box">
+            <form method="get" class="row g-3">
+                <!-- Búsqueda por nombre/apellido/contacto -->
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="form-control" 
+                            placeholder="Buscar por nombre, apellido o contacto..."
+                            value="{{ search_query }}"
+                        >
+                    </div>
+                </div>
+
+                <!-- Filtro por estado -->
+                <div class="col-md-3">
+                    <select name="estado" class="form-select">
+                        <option value="">-- Todos --</option>
+                        <option value="activo" {% if estado_filter == 'activo' %}selected{% endif %}>Activos</option>
+                        <option value="inactivo" {% if estado_filter == 'inactivo' %}selected{% endif %}>Inactivos</option>
+                    </select>
+                </div>
+
+                <!-- Botón de búsqueda -->
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Botón para crear nuevo trabajador -->
+        <div class="mb-3">
+            <a href="{% url 'trabajador_crear' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-user-plus"></i> Agregar Nuevo Trabajador
+            </a>
+        </div>
+
+        <!-- Tabla de trabajadores -->
+        {% if trabajadores %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-user"></i> Nombre</th>
+                            <th><i class="fas fa-user"></i> Apellido</th>
+                            <th><i class="fas fa-map-marker-alt"></i> Dirección</th>
+                            <th><i class="fas fa-phone"></i> Contacto</th>
+                            <th><i class="fas fa-birthday-cake"></i> Edad</th>
+                            <th><i class="fas fa-toggle-on"></i> Estado</th>
+                            <th><i class="fas fa-cogs"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trabajador in trabajadores %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-secondary">{{ trabajador.id }}</span>
+                                </td>
+                                <td>{{ trabajador.nombre }}</td>
+                                <td>{{ trabajador.apellido }}</td>
+                                <td>{{ trabajador.direccion }}</td>
+                                <td>
+                                    <a href="tel:{{ trabajador.contacto }}">
+                                        {{ trabajador.contacto }}
+                                    </a>
+                                </td>
+                                <td>{{ trabajador.edad }} años</td>
+                                <td>
+                                    {% if trabajador.activo %}
+                                        <span class="badge badge-activo">Activo</span>
+                                    {% else %}
+                                        <span class="badge badge-inactivo">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <!-- Botones de acción -->
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <!-- Ver detalle -->
+                                        <a 
+                                            href="{% url 'trabajador_detalle' trabajador.id %}" 
+                                            class="btn btn-info btn-sm" 
+                                            title="Ver detalles"
+                                        >
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+
+                                        <!-- Editar -->
+                                        <a 
+                                            href="{% url 'trabajador_editar' trabajador.id %}" 
+                                            class="btn btn-warning btn-sm" 
+                                            title="Editar trabajador"
+                                        >
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+
+                                        <!-- Eliminar -->
+                                        <a 
+                                            href="{% url 'trabajador_eliminar' trabajador.id %}" 
+                                            class="btn btn-danger btn-sm" 
+                                            title="Eliminar trabajador"
+                                            onclick="return confirm('¿Está seguro de que desea eliminar este trabajador?')"
+                                        >
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            {% if trabajadores.has_other_pages %}
+                <nav aria-label="Paginación de trabajadores">
+                    <ul class="pagination justify-content-center">
+                        <!-- Primera página -->
+                        {% if trabajadores.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    <i class="fas fa-chevron-left"></i> Primera
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <!-- Página anterior -->
+                        {% if trabajadores.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ trabajadores.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Anterior
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Anterior</span>
+                            </li>
+                        {% endif %}
+
+                        <!-- Número de página actual -->
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Página {{ trabajadores.number }} de {{ trabajadores.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        <!-- Página siguiente -->
+                        {% if trabajadores.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ trabajadores.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Siguiente
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Siguiente</span>
+                            </li>
+                        {% endif %}
+
+                        <!-- Última página -->
+                        {% if trabajadores.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ trabajadores.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Última <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+
+                <!-- Información de paginación -->
+                <div class="alert alert-info text-center">
+                    Total de trabajadores: <strong>{{ trabajadores.paginator.count }}</strong> | 
+                    Mostrando página <strong>{{ trabajadores.number }}</strong> de <strong>{{ trabajadores.paginator.num_pages }}</strong>
+                </div>
+            {% endif %}
+
         {% else %}
-            <p>No hay trabajadores registrados.</p>
+            <!-- Mensaje cuando no hay resultados -->
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-info-circle"></i>
+                <strong>No hay trabajadores registrados.</strong>
+                {% if search_query or estado_filter %}
+                    <br>Intenta cambiar los filtros de búsqueda.
+                {% else %}
+                    <br><a href="{% url 'trabajador_crear' %}" class="alert-link">Crea tu primer trabajador</a>
+                {% endif %}
+            </div>
         {% endif %}
 
-        <br><br>
-
-        <!-- Botones de navegación -->
-        <div>
-            <!-- Redirige a la página principal -->
-            <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">Regresar</button>
-            
-            <!-- Redirige al formulario para ingresar un nuevo trabajador -->
-            <button onclick="location.href='http://127.0.0.1:8000/ingresoT/'" class="botones" type="button">Ingresar Trabajador</button>
-            
-            <br><br>
+        <!-- Estadísticas -->
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-users"></i> Total Trabajadores</h5>
+                        <p class="card-text display-4">{{ trabajadores.paginator.count }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-check-circle"></i> Activos</h5>
+                        <p class="card-text display-4" id="activos">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h5 class="card-title"><i class="fas fa-times-circle"></i> Inactivos</h5>
+                        <p class="card-text display-4" id="inactivos">0</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <br><br>
-
-    <!-- Imágenes decorativas de buses (cargadas desde /static/img/) -->
-    <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
-    <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus 1">
-    <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
-
-</body>
-</html>
+    <!-- JavaScript para contar activos/inactivos -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filas = document.querySelectorAll('tbody tr');
+            let activos = 0, inactivos = 0;
+            
+            filas.forEach(fila => {
+                if (fila.textContent.includes('Activo')) {
+                    activos++;
+                } else if (fila.textContent.includes('Inactivo')) {
+                    inactivos++;
+                }
+            });
+            
+            document.getElementById('activos').textContent = activos;
+            document.getElementById('inactivos').textContent = inactivos;
+        });
+    </script>
+{% endblock %}

@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'projectoFrontEnd.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'projectoFrontEnd',
+        'NAME': 'projectoFrontEnd', 
         'USER': 'root',
         'PASSWORD': '1234',
         'HOST': 'localhost',
