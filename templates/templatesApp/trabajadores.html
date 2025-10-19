@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static 'css/index.css' %}">
 </head>
 <body>
+    {% if trabajadores %}
     <!-- Barra de navegación con enlaces a distintas vistas -->
     <ul class="navbar">
         <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
@@ -29,25 +30,35 @@
 
         <!-- Tabla con la información de un trabajador -->
         <table style="width: 100%;">
-            <tr>
-                <!-- Encabezados de la tabla -->
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Dirección</th>
-                <th>Contacto</th>
-                <th>Edad</th>
-            </tr>
-            <tr>    
-                <!-- Celdas que muestran datos pasados desde la vista de Django -->
-                <td>{{id}}</td>
-                <td>{{nombre}}</td>
-                <td>{{apellido}}</td>
-                <td>{{direccion}}</td>
-                <td>{{contacto}}</td>
-                <td>{{edad}}</td>
-            </tr>
+            <thead>
+                <tr>
+                    <!-- Encabezados de la tabla -->
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Dirección</th>
+                    <th>Contacto</th>
+                    <th>Edad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for trabajador in trabajadores %}
+                <tr>    
+                    <!-- Celdas que muestran datos pasados desde la vista de Django -->
+                    <td scope="row">{{trabajador.id}}</td>
+                    <td>{{trabajador.nombre}}</td>
+                    <td>{{trabajador.apellido}}</td>
+                    <td>{{trabajador.direccion}}</td>
+                    <td>{{trabajador.contacto}}</td>
+                    <td>{{trabajador.edad}}</td>
+                </tr>
+                {% endfor %}
+        </tbody>
         </table>
+        {% else %}
+            <p>No hay trabajadores registrados.</p>
+        {% endif %}
+
         <br><br>
 
         <!-- Botones de navegación -->

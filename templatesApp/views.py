@@ -1,48 +1,37 @@
 from django.shortcuts import render
+from .models import Trabajador
 
 # Create your views here.
 
 def index(request):
     return render(request, 'templatesApp/index.html')
 
-def rol(request):
-    return render(request, 'templatesApp/rol.html')
-
 def login1(request):
     return render(request, 'templatesApp/login.html')
 
-def buses1(request):
+def buses(request):
     data = {
-        "patente" : "A1 P2 23",
-        "modelo" : "volvo",
-        "año" : 2003,
-        "capacidad" : 40,
+        "patente": "A1 P2 23",
+        "modelo": "chevrolet",
+        "año": 2003,
+        "capacidad": 40,
     }
     return render(request, 'templatesApp/buses.html', data)
 
 def ingresot(request):
     return render(request, 'templatesApp/ingresoT.html')
 
-
-def data1(request):
+def trabajadores_list(request):
+    trabajadores_data = Trabajador.objects.all()
     data = {
-        "id" : "1",
-        "nombre" : "juan",
-        "apellido" : "saravia",
-        "direccion" : "amadeo de lar 1736",
-        "contacto" : "+56957980694",
-        "edad" : 18  
-            }
+        'trabajadores': trabajadores_data
+    }
     return render(request, 'templatesApp/trabajadores.html', data)
 
-def buses(request):
-    return render(request, 'templatesApp/ingresobus.html')
-
-
-def rol (request):
+def rol(request):
     data = {
-        "id" : "1",
-        "rol" : "conductor"
+        "id": 1,
+        "rol": "conductor"
     }
     return render(request, 'templatesApp/rol.html', data)
 
@@ -51,8 +40,8 @@ def ingresoR(request):
 
 def estadoB(request):
     data = {
-        "patente" : "A1 P2 23",
-        "estado" : "en servicio"
+        "patente": "A1 P2 23",
+        "estado": "en servicio"
     }
     return render(request, 'templatesApp/estado_bus.html', data)
 
@@ -61,31 +50,19 @@ def cambiarestado(request):
 
 def asignarR(request):
     data = {
-        "id_trabajador" : "1",
-        "nombre" : "juan",
-        "apellido" : "saravia",
-        "rol_asignado" : "conductor"
+        "id_trabajador": 1,
+        "nombre": "juan",
+        "apellido": "saravia",
+        "rol_asignado": "conductor"
     }
     return render(request, 'templatesApp/asignarol.html', data)
 
-def asignarB(request):
-    data = {
-        "id_trabajador" : "1",
-        "nombre" : "juan",
-        "apellido" : "saravia",
-        "bus_asignado" : "A1 P2 23"
-    }
-    return render(request, 'templatesApp/asignarbus.html', data)
-
-def cambiarol(request):
-    return render(request, 'templatesApp/cambiarol.html')
-
 def asignarbus(request):
     data = {
-        "id_trabajador" : "1",
-        "nombre" : "juan",
-        "apellido" : "saravia",
-        "bus_asignado" : "A1 P2 23"
+        "id_trabajador": 1,
+        "nombre": "juan",
+        "apellido": "saravia",
+        "bus_asignado": "A1 P2 23"
     }
     return render(request, 'templatesApp/asignarbus.html', data)
 
