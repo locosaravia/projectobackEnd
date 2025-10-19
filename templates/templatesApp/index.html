@@ -1,50 +1,277 @@
-<!DOCTYPE html>
-{% load static %} <!-- Carga la librería de Django para usar archivos estáticos (CSS, imágenes, JS) -->
+{% extends 'templatesApp/base.html' %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8"> <!-- Codificación de caracteres (UTF-8 admite tildes y caracteres especiales) -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ajuste responsivo para móviles -->
-    <title>index</title> <!-- Título de la pestaña del navegador -->
+{% block title %}Dashboard - Sistema de Gestión de Transporte{% endblock %}
 
-    <!-- Vincula la hoja de estilos desde /static/css/index.css -->
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-</head>
-<body>
-    <!-- Contenedor principal -->
-    <div class="div2">
-        
-        <!-- Encabezado -->
-        <div class="div1">
-            <h1>menu</h1> <!-- Título de la página -->
+{% block content %}
+    <div class="container">
+        <!-- Bienvenida -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="alert alert-info border-0 shadow-sm">
+                    <h4 class="alert-heading">
+                        <i class="fas fa-bus"></i> Bienvenido al Sistema de Gestión de Transporte
+                    </h4>
+                    <p>Administra de manera eficiente tus trabajadores, buses, roles y asignaciones.</p>
+                </div>
+            </div>
         </div>
 
-        <!-- Opciones del menú -->
-        <div>
-            <!-- Cada botón redirige a una sección distinta del sistema -->
-            <button onclick="location.href='http://127.0.0.1:8000/trabajadores/'" type="button" class="botones">ver trabajador</button><br><br>
-            
-            <button onclick="location.href='http://127.0.0.1:8000/buses/'" type="button" class="botones">ver buses</button><br><br>
-            
-            <button onclick="location.href='http://127.0.0.1:8000/rol/'" type="button" class="botones">ver roles</button><br><br>
-            
-            <button onclick="location.href='http://127.0.0.1:8000/estadoB/'" type="button" class="botones">ver estados de bus</button><br><br>
-            
-            <button onclick="location.href='http://127.0.0.1:8000/asignarR/'" type="button" class="botones">asociar rol a trabajador</button><br><br>
-            
-            <button onclick="location.href='http://127.0.0.1:8000/asignarB/'" type="button" class="botones">asignar trabajador a bus</button><br><br>
+        <!-- Estadísticas principales -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-users" style="font-size: 2.5rem; color: #3498db;"></i>
+                        <h5 class="card-title mt-3">Trabajadores</h5>
+                        <p class="card-text display-5">{{ total_trabajadores }}</p>
+                        <small class="text-muted">Activos en el sistema</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-bus" style="font-size: 2.5rem; color: #27ae60;"></i>
+                        <h5 class="card-title mt-3">Buses</h5>
+                        <p class="card-text display-5">{{ total_buses }}</p>
+                        <small class="text-muted">En el inventario</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-briefcase" style="font-size: 2.5rem; color: #e74c3c;"></i>
+                        <h5 class="card-title mt-3">Roles</h5>
+                        <p class="card-text display-5">{{ total_roles }}</p>
+                        <small class="text-muted">Disponibles</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="fas fa-check-circle" style="font-size: 2.5rem; color: #f39c12;"></i>
+                        <h5 class="card-title mt-3">Asignaciones</h5>
+                        <p class="card-text display-5">{{ asignaciones_activas }}</p>
+                        <small class="text-muted">Activas</small>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Botón de cierre de sesión -->
-        <button onclick="location.href='http://127.0.0.1:8000/login/'" type="button" class="botones1">salir</button>
+        <!-- Estado de buses -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-check"></i> Buses Operativos
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="text-success">{{ buses_operativos }}</h3>
+                        <p class="text-muted">Listos para operar</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Estado General
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 class="text-info">Sistema</h3>
+                        <p class="text-muted">Funcionando correctamente</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-calendar"></i> Fecha Actual
+                    </div>
+                    <div class="card-body text-center">
+                        <h3 id="fecha"></h3>
+                        <p class="text-muted">Hora actual del sistema</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú de navegación principal -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="mb-3">
+                    <i class="fas fa-bars"></i> Accesos Rápidos
+                </h3>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            <!-- Trabajadores -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users" style="font-size: 3rem; color: #3498db;"></i>
+                        <h5 class="card-title mt-3">Gestionar Trabajadores</h5>
+                        <p class="card-text text-muted">Crear, editar y eliminar trabajadores</p>
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'trabajadores_list' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-list"></i> Ver Todos
+                            </a>
+                            <a href="{% url 'trabajador_crear' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Crear
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buses -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-bus" style="font-size: 3rem; color: #27ae60;"></i>
+                        <h5 class="card-title mt-3">Gestionar Buses</h5>
+                        <p class="card-text text-muted">Administrar vehículos y especificaciones</p>
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'buses_list' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-list"></i> Ver Todos
+                            </a>
+                            <a href="{% url 'bus_crear' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Crear
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roles -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-briefcase" style="font-size: 3rem; color: #e74c3c;"></i>
+                        <h5 class="card-title mt-3">Gestionar Roles</h5>
+                        <p class="card-text text-muted">Definir roles y permisos de acceso</p>
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'roles_list' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-list"></i> Ver Todos
+                            </a>
+                            <a href="{% url 'rol_crear' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Crear
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado de Buses -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-info-circle" style="font-size: 3rem; color: #f39c12;"></i>
+                        <h5 class="card-title mt-3">Estado de Buses</h5>
+                        <p class="card-text text-muted">Monitorear estado operativo de buses</p>
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'estados_bus_list' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-list"></i> Ver Todos
+                            </a>
+                            <a href="{% url 'estado_bus_crear' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Crear
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asignación de Roles -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-link" style="font-size: 3rem; color: #9b59b6;"></i>
+                        <h5 class="card-title mt-3">Asignar Roles</h5>
+                        <p class="card-text text-muted">Vincular trabajadores con roles</p>
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'asignaciones_rol_list' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-list"></i> Ver Todos
+                            </a>
+                            <a href="{% url 'asignacion_rol_crear' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Crear
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Asignación de Buses -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm hover-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-exchange-alt" style="font-size: 3rem; color: #1abc9c;"></i>
+                        <h5 class="card-title mt-3">Asignar Buses</h5>
+                        <p class="card-text text-muted">Asignar conductores a buses</p>
+                        <div class="btn-group w-100" role="group">
+                            <a href="{% url 'asignaciones_bus_list' %}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-list"></i> Ver Todos
+                            </a>
+                            <a href="{% url 'asignacion_bus_crear' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus"></i> Crear
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acceso a administrador -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="alert alert-secondary">
+                    <i class="fas fa-cogs"></i>
+                    <strong>Administrador:</strong> Accede al 
+                    <a href="{% url 'admin:index' %}" class="alert-link" target="_blank">
+                        panel de administración <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    para gestionar permisos y usuarios avanzados.
+                </div>
+            </div>
+        </div>
     </div>
 
-    <br><br><br>
+    <!-- CSS adicional para hover en tarjetas -->
+    <style>
+        .hover-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
 
-    <!-- Imágenes decorativas de buses cargadas desde /static/img/ -->
-    <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
-    <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus lateral">
-    <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
+        .hover-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+        }
+    </style>
 
-</body>
-</html>
+    <!-- JavaScript para mostrar fecha y hora -->
+    <script>
+        function actualizarFecha() {
+            const opciones = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const ahora = new Date();
+            document.getElementById('fecha').textContent = ahora.toLocaleDateString('es-CL', opciones);
+        }
+
+        // Actualizar fecha al cargar y cada minuto
+        actualizarFecha();
+        setInterval(actualizarFecha, 60000);
+    </script>
+{% endblock %}

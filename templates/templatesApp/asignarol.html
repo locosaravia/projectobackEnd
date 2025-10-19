@@ -1,65 +1,104 @@
-<!DOCTYPE html>
-{% load static %} <!-- Importa la etiqueta de Django para usar archivos estáticos (CSS, imágenes, JS) -->
+{% extends 'templatesApp/base.html' %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8"> <!-- Codificación UTF-8 para permitir caracteres especiales como tildes y ñ -->
-    <meta name="viewport" content="width=7, initial-scale=1.0"> <!-- Configuración de vista adaptable (aunque width=7 parece un error tipográfico) -->
-    <title>Document</title> <!-- Título de la pestaña en el navegador -->
+{% block title %}Asignación de Rol - Sistema de Gestión{% endblock %}
 
-    <!-- Vinculación con la hoja de estilos personalizada en /static/css/index.css -->
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-</head>
-<body>
-    
-    <!-- Barra de navegación principal -->
-    <ul class="navbar">
-        <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
-        <li><a href="http://127.0.0.1:8000/trabajadores/">Trabajadores</a></li>
-        <li><a href="http://127.0.0.1:8000/rol/">Roles</a></li>
-        <li><a href="http://127.0.0.1:8000/estadoB/">Estado Bus</a></li>
-        <li><a href="http://127.0.0.1:8000/asignarB/">Asignar Bus</a></li>
-        <li><a href="http://127.0.0.1:8000/buses">Buses</a></li>
-    </ul>
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'asignaciones_rol_list' %}">Asignaciones de Roles</a></li>
+                <li class="breadcrumb-item active">Detalle</li>
+            </ol>
+        </nav>
 
-    <!-- Contenedor principal -->
-    <div class="div2">
-
-        <!-- Encabezado de sección -->
-        <div class="div1">
-            <h1>estado</h1> <!-- Aquí se muestran los roles de trabajadores -->
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-link"></i> Asignación de Rol
+            </h1>
         </div>
 
-        <!-- Tabla de datos -->
-        <table style="width: 100%;">
-            <tr>
-                <th>id</th> <!-- Identificador del trabajador -->
-                <th>Rol</th> <!-- Rol asignado -->
-            </tr>
-            <tr>
-                <!-- Variables de Django que mostrarán los valores dinámicos desde la vista -->
-                <td>{{ id_trabajador }}</td>
-                <td>{{ rol_asignado }}</td>
-            </tr>
-        </table>
-        <br><br>
+        <!-- Información de la asignación -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Información de la Asignación
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">ID Trabajador:</div>
+                                    <div class="detalle-valor">
+                                        {{ id_trabajador }}
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Rol Asignado:</div>
+                                    <div class="detalle-valor">
+                                        <strong>{{ rol_asignado }}</strong>
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Fecha de Asignación:</div>
+                                    <div class="detalle-valor">
+                                        Información de fecha
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Fecha de Finalización:</div>
+                                    <div class="detalle-valor">
+                                        Información de fecha final
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Estado:</div>
+                                    <div class="detalle-valor">
+                                        <span class="badge badge-activo">Activa</span>
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Observaciones:</div>
+                                    <div class="detalle-valor">
+                                        <span class="text-muted">Sin observaciones</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Botones de acción -->
-        <div>
-            <!-- Redirige al menú principal -->
-            <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">Regresar</button>
+            <!-- Panel de acciones -->
+            <div class="col-md-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <i class="fas fa-cogs"></i> Acciones
+                    </div>
+                    <div class="card-body d-flex flex-column gap-2">
+                        <a href="{% url 'asignaciones_rol_list' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-list"></i> Ver Todas
+                        </a>
 
-            <!-- Redirige a la página para cambiar el rol de un trabajador -->
-            <button onclick="location.href='http://127.0.0.1:8000/cambiarol/'" class="botones" type="button">cambiar rol</button>
-            <br><br>
+                        <a href="{% url 'asignacion_rol_editar' 1 %}" class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+
+                        <a href="{% url 'asignacion_rol_eliminar' 1 %}" class="btn btn-danger btn-lg" onclick="return confirm('¿Eliminar esta asignación?')">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+
+                        <a href="{% url 'index' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <br><br><br>
-
-    <!-- Imágenes decorativas -->
-    <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
-    <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus lateral">
-    <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
-
-</body>
-</html>
+{% endblock %}

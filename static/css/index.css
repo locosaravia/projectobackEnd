@@ -1,194 +1,301 @@
-/* ============================
-   🎨 ESTILOS GENERALES DE LA PÁGINA
-   ============================ */
+/* ==================== ESTILOS GENERALES ==================== */
 
-/* Fondo principal */
-body {
-    background-color: rgb(255, 255, 255);
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --warning-color: #f39c12;
+    --light-color: #ecf0f1;
+    --dark-color: #34495e;
 }
 
-/* Encabezado principal (H1) */
-h1 {
-    text-align: center;                 /* Centrado */
-    color: rgb(253, 164, 142);          /* Mismo color que el fondo → puede ser difícil de leer */
-}
-
-/* ============================
-   📦 CONTENEDORES PRINCIPALES
-   ============================ */
-
-/* Contenedor central (bloque principal) */
-.div2 {
-    background-color: rgb(136, 76, 220); /* Fondo violeta */
-    text-align: center;                  /* Contenido centrado */
-    margin-left: 350px;                  /* Márgenes laterales fijos */
-    margin-right: 350px;
-    border-radius: 15px;                 /* Bordes redondeados */
-}
-
-/* Parte superior del contenedor */
-.div1 {
-    background-color: rgb(99, 58, 156);  /* Fondo violeta oscuro */
-    border-top-left-radius: 15px;        /* Bordes redondeados arriba izquierda */
-    border-top-right-radius: 15px;       /* Bordes redondeados arriba derecha */
-}
-
-/* Contenedor alternativo (centrado con márgenes grandes) */
-.div3 {
-    background-color: rgb(136, 76, 220);
-    text-align: center;
-    margin-top: 250px;                   /* Gran espacio arriba */
-    margin-left: 550px;
-    margin-right: 550px;
-    border-radius: 15px;
-}
-
-
-.div3 input[type="text"],
-.div3 input[type="password"] {
-    width: 260px;        /* 🔧 ajusta a 220px, 280px, etc. */
-    max-width: 90%;
-    padding: 8px 10px;
-    font-size: 14px;
-    display: block;
-    margin: 10px auto;
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-/* Otro contenedor alternativo */
-.div4 {
-    background-color: rgb(136, 76, 220);
-    text-align: center;
-    margin-top: 250px;
-    margin-left: 300px;
-    margin-right: 300px;
-    border-radius: 15px;
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-color);
+    color: var(--dark-color);
 }
 
-/* ============================
-   🔘 BOTONES
-   ============================ */
+/* ==================== CONTENEDOR PRINCIPAL ==================== */
 
-/* Botón principal */
-.botones {
-    padding: 10px 60px;                  /* Tamaño del botón */
-    border: none;                        /* Sin borde */
-    background-color: rgb(253, 164, 142);/* Fondo rosado */
-    color: rgb(99, 58, 156);             /* Texto violeta oscuro */
-    border-radius: 10px;                 /* Bordes redondeados */
-    cursor: pointer;                     /* Manito al pasar encima */
-    text-transform: uppercase;           /* Texto en mayúsculas */
-    text-decoration: none;               /* Sin subrayado */
+.div2 {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 30px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Botón al pasar el mouse */
-.botones:hover {
-    background-color: rgb(225, 141, 120);
-}
+/* ==================== ENCABEZADO ==================== */
 
-/* Botón al hacer clic */
-.botones:active {
-    background-color: rgb(180, 112, 95);
-}
-
-/* Variante de botón (más estrecho y alineado distinto) */
-.botones1 {
-    padding: 10px 30px;
-    border: none;
-    background-color: rgb(253, 164, 142);
-    color: rgb(99, 58, 156);
+.div1 {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 25px;
     border-radius: 10px;
-    cursor: pointer;
+    margin-bottom: 30px;
+    text-align: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+.div1 h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
     text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ==================== BOTONES ==================== */
+
+.botones {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
     text-decoration: none;
-    margin-right: 600px;                /* Lo empuja hacia la izquierda */
-    margin-bottom: 30px;                /* Espaciado inferior */
-    text-align: right;                  /* Texto alineado a la derecha */
+    display: inline-block;
+    min-width: 200px;
 }
 
-/* Variante hover */
+.botones:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #1f618d 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.5);
+    color: white;
+}
+
+.botones:active {
+    transform: translateY(-1px);
+}
+
+.botones1 {
+    background: linear-gradient(135deg, var(--danger-color) 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    margin: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+    text-decoration: none;
+    display: inline-block;
+    min-width: 200px;
+}
+
 .botones1:hover {
-    background-color: rgb(225, 141, 120);
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.5);
+    color: white;
 }
 
-/* Variante activa */
 .botones1:active {
-    background-color: rgb(180, 112, 95);
+    transform: translateY(-1px);
 }
 
-/* ============================
-   🚌 ELEMENTOS PERSONALIZADOS
-   ============================ */
+/* ==================== IMÁGENES DECORATIVAS ==================== */
 
-/* Ajuste de margen para elementos (probablemente imágenes) */
 .bus1 {
-    margin-left: 150px;
+    position: relative;
+    animation: moveLeft 3s ease-in-out infinite;
+    margin: 20px 10px;
 }
 
 .bus2 {
-    margin-left: 50px;
+    position: relative;
+    animation: moveRight 3s ease-in-out infinite;
+    margin: 20px 10px;
 }
 
-/* ============================
-   📊 TABLAS
-   ============================ */
-
-table, th, td {
-  border: 1px solid black;              /* Bordes negros */
-  /* Se recomienda border-collapse: collapse; y padding para mejorar la visualización */
+@keyframes moveLeft {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(-20px);
+    }
 }
 
-/* ============================
-   🔡 CAMPOS DE ENTRADA
-   ============================ */
-
-.input1 {
-    padding: 10px;
-    border: 2px solid rgb(136, 76, 220);
-    border-radius: 6px;
-    font-size: 16px;
-    width: 20px;       /* ✅ Ahora ocupan el 30% del contenedor */
-    margin: 10px;
-    display: inline-block;
+@keyframes moveRight {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(20px);
+    }
 }
 
+/* ==================== TARJETAS (CARDS) ==================== */
 
-/* ============================
-   📑 ESTILOS PARA LA BARRA DE NAVEGACIÓN
-   ============================ */
-
-/* Barra principal (el <ul> con clase .navbar) */
-ul.navbar {
-    display: flex;                          /* Muestra los elementos en fila (horizontal) */
-    background-color: rgb(99, 58, 156);     /* Fondo violeta oscuro */
-    border-radius: 15px;                    /* Bordes redondeados */
-    overflow: hidden;                       /* Oculta contenido que sobresalga */
-    margin: 0 0 30px 0;                     /* Margen inferior (separación con lo de abajo) */
-    padding: 0;                             /* Sin relleno interno */
-    list-style: none;                       /* Quita las viñetas de la lista */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Sombra suave debajo */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
 }
 
-/* Cada <li> dentro de la barra de navegación */
-ul.navbar li {
-    flex: 1;                                /* Hace que todos los <li> ocupen el mismo ancho */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Estilos para los enlaces <a> dentro de la barra */
-ul.navbar li a {
-    display: block;                         /* Hace que el enlace se comporte como un bloque */
-    color: #fff;                            /* Texto blanco */
-    text-align: center;                     /* Centra el texto horizontalmente */
-    padding: 16px 0;                        /* Relleno vertical (alto del botón) */
-    text-decoration: none;                  /* Quita el subrayado típico de los links */
-    font-weight: 600;                       /* Texto más grueso */
-    letter-spacing: 1px;                    /* Espaciado entre letras */
-    transition: background 0.2s, color 0.2s;/* Transición suave en hover/focus */
+.card-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border: none;
+    font-weight: bold;
+    padding: 15px;
+    border-radius: 10px 10px 0 0;
 }
 
-/* Cuando el usuario pasa el mouse o enfoca un enlace */
-ul.navbar li a:hover, 
-ul.navbar li a:focus {
-    background-color: rgb(136, 76, 220);    /* Cambia a violeta medio */
-    color: rgb(253, 164, 142);              /* Texto rosado */
+.card-body {
+    padding: 20px;
+}
+
+/* ==================== TEXTO Y FUENTES ==================== */
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+p {
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+.text-muted {
+    color: #95a5a6 !important;
+}
+
+/* ==================== ALERTAS ==================== */
+
+.alert {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-left: 4px solid var(--secondary-color);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-left: 4px solid var(--success-color);
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid var(--danger-color);
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border-left: 4px solid var(--warning-color);
+}
+
+/* ==================== ESTADÍSTICAS ==================== */
+
+.display-5 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    margin: 10px 0;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 768px) {
+    .div1 h1 {
+        font-size: 1.8rem;
+    }
+
+    .botones, .botones1 {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        min-width: 150px;
+        margin: 5px;
+    }
+
+    .div2 {
+        padding: 15px;
+        margin: 20px auto;
+    }
+
+    img {
+        width: 80% !important;
+    }
+
+    .bus1, .bus2 {
+        width: 100% !important;
+        margin: 10px auto;
+        display: block;
+    }
+}
+
+@media (max-width: 480px) {
+    .div1 h1 {
+        font-size: 1.5rem;
+    }
+
+    .botones, .botones1 {
+        width: 100%;
+        padding: 12px;
+        margin: 5px 0;
+    }
+
+    .display-5 {
+        font-size: 2rem;
+    }
+}
+
+/* ==================== TRANSICIONES ==================== */
+
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+/* ==================== SCROLLBAR ==================== */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--light-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
 }

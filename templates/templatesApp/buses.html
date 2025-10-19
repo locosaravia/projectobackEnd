@@ -1,69 +1,199 @@
-<!DOCTYPE html>
-{% load static %} <!-- Carga la etiqueta de archivos estáticos de Django -->
-<html lang="en">
-<head>
-    <meta charset="UTF-8"> <!-- Permite caracteres especiales (ñ, tildes, etc.) -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Responsive en móviles -->
-    <title>Document</title> <!-- Título de la pestaña del navegador -->
+{% extends 'templatesApp/base.html' %}
 
-    <!-- Vinculación con hoja de estilos CSS ubicada en static/css/index.css -->
-    <!-- ⚠️ Nota: en Django se recomienda usar comillas simples -->
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-</head>
-<body>
+{% block title %}Listado de Buses - Sistema de Gestión{% endblock %}
 
-    <!-- ======================= NAVBAR ======================= -->
-    <!-- Lista de navegación que lleva a distintas secciones del sistema -->
-    <ul class="navbar">
-        <!-- Enlaces a diferentes vistas (por ahora están con URL fija localhost) -->
-        <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
-        <li><a href="http://127.0.0.1:8000/trabajadores/">Trabajadores</a></li>
-        <li><a href="http://127.0.0.1:8000/rol/">Roles</a></li>
-        <li><a href="http://127.0.0.1:8000/estadoB/">Estado Bus</a></li>
-        <li><a href="http://127.0.0.1:8000/asignarR/">Asignar Rol</a></li>
-        <li><a href="http://127.0.0.1:8000/asignarB/">Asignar Bus</a></li>
-    </ul>
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item active">Buses</li>
+            </ol>
+        </nav>
 
-    <!-- ======================= CONTENIDO PRINCIPAL ======================= -->
-    <div class="div2"> <!-- Contenedor principal -->
-        <div class="div1"> <!-- Subcontenedor del título -->
-            <h1>Buses</h1> <!-- Título de la sección -->
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-bus"></i> Gestión de Buses
+            </h1>
         </div>
 
-        <!-- ======================= TABLA DE DATOS ======================= -->
-        <table style="width: 100%;"> <!-- Tabla que ocupará el 100% del ancho -->
-            <tr>
-                <!-- Encabezados de la tabla -->
-                <th>Patente</th>
-                <th>Modelo</th>
-                <th>Año</th>
-                <th>Capacidad</th>
-            </tr>
-            <!-- Fila con datos de un bus -->
-            <!-- ⚠️ Estas variables se reemplazan dinámicamente con datos enviados desde Django -->
-            <tr>
-                <td>{{patente}}</td> <!-- Número de patente del bus -->
-                <td>{{modelo}}</td>  <!-- Modelo del bus -->
-                <td>{{año}}</td>     <!-- Año de fabricación -->
-                <td>{{capacidad}}</td> <!-- Capacidad de pasajeros -->
-            </tr>
-        </table>
-        <br><br>
+        <!-- Búsqueda y Filtros -->
+        <div class="search-box">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="form-control" 
+                            placeholder="Buscar por patente, modelo o marca..."
+                            value="{{ search_query }}"
+                        >
+                    </div>
+                </div>
 
-        <!-- ======================= BOTONES DE ACCIÓN ======================= -->
-        <div>
-            <!-- Botón para regresar al menú principal -->
-            <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">
-                Regresar
-            </button>
+                <div class="col-md-3">
+                    <select name="estado" class="form-select">
+                        <option value="">-- Todos --</option>
+                        <option value="activo" {% if estado_filter == 'activo' %}selected{% endif %}>Activos</option>
+                        <option value="inactivo" {% if estado_filter == 'inactivo' %}selected{% endif %}>Inactivos</option>
+                    </select>
+                </div>
 
-            <!-- Botón para ir al formulario de ingreso de un nuevo bus -->
-            <button onclick="location.href='http://127.0.0.1:8000/ingresoB/'" class="botones" type="button">
-                Ingresar Bus
-            </button>
-            <br><br>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
         </div>
+
+        <!-- Botón para crear nuevo bus -->
+        <div class="mb-3">
+            <a href="{% url 'bus_crear' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-plus"></i> Agregar Nuevo Bus
+            </a>
+        </div>
+
+        <!-- Tabla de buses -->
+        {% if buses %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-id-card"></i> Patente</th>
+                            <th><i class="fas fa-car"></i> Marca</th>
+                            <th><i class="fas fa-cogs"></i> Modelo</th>
+                            <th><i class="fas fa-calendar"></i> Año</th>
+                            <th><i class="fas fa-users"></i> Capacidad</th>
+                            <th><i class="fas fa-toggle-on"></i> Estado</th>
+                            <th><i class="fas fa-tools"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bus in buses %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-secondary">{{ bus.id }}</span>
+                                </td>
+                                <td><strong>{{ bus.patente }}</strong></td>
+                                <td>{{ bus.marca }}</td>
+                                <td>{{ bus.modelo }}</td>
+                                <td>{{ bus.año }}</td>
+                                <td>{{ bus.capacidad }} personas</td>
+                                <td>
+                                    {% if bus.activo %}
+                                        <span class="badge badge-activo">Activo</span>
+                                    {% else %}
+                                        <span class="badge badge-inactivo">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a 
+                                            href="{% url 'bus_detalle' bus.id %}" 
+                                            class="btn btn-info btn-sm" 
+                                            title="Ver detalles"
+                                        >
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+
+                                        <a 
+                                            href="{% url 'bus_editar' bus.id %}" 
+                                            class="btn btn-warning btn-sm" 
+                                            title="Editar bus"
+                                        >
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+
+                                        <a 
+                                            href="{% url 'bus_eliminar' bus.id %}" 
+                                            class="btn btn-danger btn-sm" 
+                                            title="Eliminar bus"
+                                            onclick="return confirm('¿Está seguro de que desea eliminar este bus?')"
+                                        >
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            {% if buses.has_other_pages %}
+                <nav aria-label="Paginación de buses">
+                    <ul class="pagination justify-content-center">
+                        {% if buses.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    <i class="fas fa-chevron-left"></i> Primera
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if buses.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ buses.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Anterior
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Anterior</span>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Página {{ buses.number }} de {{ buses.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if buses.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ buses.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Siguiente
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Siguiente</span>
+                            </li>
+                        {% endif %}
+
+                        {% if buses.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ buses.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Última <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+
+                <div class="alert alert-info text-center">
+                    Total de buses: <strong>{{ buses.paginator.count }}</strong> | 
+                    Página <strong>{{ buses.number }}</strong> de <strong>{{ buses.paginator.num_pages }}</strong>
+                </div>
+            {% endif %}
+
+        {% else %}
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-info-circle"></i>
+                <strong>No hay buses registrados.</strong>
+                {% if search_query or estado_filter %}
+                    <br>Intenta cambiar los filtros de búsqueda.
+                {% else %}
+                    <br><a href="{% url 'bus_crear' %}" class="alert-link">Crea tu primer bus</a>
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
-    
-</body>
-</html>
+{% endblock %}|

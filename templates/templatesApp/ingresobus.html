@@ -1,61 +1,171 @@
-<!DOCTYPE html>
-{% load static %} <!-- Carga la librería de Django para poder usar archivos estáticos (CSS, imágenes, JS) -->
+{% extends 'templatesApp/base.html' %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8"> <!-- Codificación de caracteres en UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que la página sea responsive en móviles -->
-    <title>ingresos</title> <!-- Título que aparece en la pestaña del navegador -->
-    
-    <!-- Vincula la hoja de estilos ubicada en /static/css/index.css -->
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-</head>
-<body>
-    <!-- Contenedor principal -->
-    <div class="div2">
-        
-        <!-- Encabezado de la página -->
-        <div class="div1">
-            <h1>ingreso bus</h1>
+{% block title %}{% if accion == 'Crear' %}Crear Bus{% else %}Editar Bus{% endif %} - Sistema de Gestión{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'buses_list' %}">Buses</a></li>
+                <li class="breadcrumb-item active">{{ accion }}</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado de página -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-bus"></i>
+                {% if accion == 'Crear' %}Crear Nuevo Bus{% else %}Editar Bus{% endif %}
+            </h1>
         </div>
 
-        <!-- Formulario para ingresar datos de un bus -->
-        <div>
-            <form>
-                <!-- Campo para la patente del bus -->
-                <label for="fId">Patente</label>
-                <input type="text" placeholder="patente"><br>
-                
-                <!-- Campo para la marca del bus -->
-                <label for="fname">marca</label>
-                <input type="text" placeholder="marca"><br>
-                
-                <!-- Campo para el año de fabricación del bus -->
-                <label for="fapellido">año</label>
-                <input type="date"><br>
-                
-                <!-- Campo para la capacidad de pasajeros del bus -->
-                <label for="fdirect">capacidad</label>
-                <input type="number" placeholder="capacidad"><br>
-            </form> 
-            <br>
+        <!-- Tarjeta del formulario -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-edit"></i> Formulario de Bus
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <!-- Patente -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_patente" class="form-label">
+                                    <i class="fas fa-id-card"></i> {{ form.patente.label }}
+                                </label>
+                                {{ form.patente }}
+                                {% if form.patente.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.patente.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
 
-            <!-- Botón para regresar a la vista de buses -->
-            <button onclick="location.href='http://127.0.0.1:8000/buses/'" class="botones">regresar</button>
-            
-            <!-- Botón para "subir" los datos, aunque en este código solo redirige a la lista de buses 
-                 (no guarda información aún) -->
-            <button onclick="location.href='http://127.0.0.1:8000/buses/'" class="botones">subir</button>
-            <br><br>
+                        <!-- Marca -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_marca" class="form-label">
+                                    <i class="fas fa-car"></i> {{ form.marca.label }}
+                                </label>
+                                {{ form.marca }}
+                                {% if form.marca.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.marca.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Modelo -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_modelo" class="form-label">
+                                    <i class="fas fa-cogs"></i> {{ form.modelo.label }}
+                                </label>
+                                {{ form.modelo }}
+                                {% if form.modelo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.modelo.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Año -->
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="id_año" class="form-label">
+                                    <i class="fas fa-calendar"></i> {{ form.año.label }}
+                                </label>
+                                {{ form.año }}
+                                {% if form.año.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.año.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Capacidad -->
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="id_capacidad" class="form-label">
+                                    <i class="fas fa-users"></i> {{ form.capacidad.label }}
+                                </label>
+                                {{ form.capacidad }}
+                                {% if form.capacidad.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.capacidad.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activo -->
+                    <div class="mb-3 form-check">
+                        {{ form.activo }}
+                        <label for="id_activo" class="form-check-label">
+                            <i class="fas fa-check-circle"></i> {{ form.activo.label }}
+                        </label>
+                        {% if form.activo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.activo.errors %}
+                                    <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Errores generales del formulario -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-times-circle"></i> <strong>Errores en el formulario:</strong>
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Botones de acción -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i> 
+                            {% if accion == 'Crear' %}Crear Bus{% else %}Guardar Cambios{% endif %}
+                        </button>
+                        <a href="{% url 'buses_list' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Nota:</strong> Todos los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                </div>
+            </div>
         </div>
     </div>
-
-    <br><br>
-
-    <!-- Imágenes decorativas de buses cargadas desde la carpeta /static/img/ -->
-    <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
-    <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus lateral">
-    <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
-
-</body>
-</html>
+{% endblock %}
