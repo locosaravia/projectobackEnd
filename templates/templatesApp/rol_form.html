@@ -1,0 +1,142 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block title %}{% if accion == 'Crear' %}Crear Rol{% else %}Editar Rol{% endif %} - Sistema de Gestión{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'roles_list' %}">Roles</a></li>
+                <li class="breadcrumb-item active">{{ accion }}</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado de página -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-briefcase"></i>
+                {% if accion == 'Crear' %}Crear Nuevo Rol{% else %}Editar Rol{% endif %}
+            </h1>
+        </div>
+
+        <!-- Tarjeta del formulario -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-edit"></i> Formulario de Rol
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Nombre del Rol -->
+                    <div class="mb-3">
+                        <label for="id_nombre" class="form-label">
+                            <i class="fas fa-briefcase"></i> {{ form.nombre.label }}
+                        </label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.nombre.errors %}
+                                    <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if form.nombre.help_text %}
+                            <small class="form-text text-muted">{{ form.nombre.help_text|safe }}</small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-3">
+                        <label for="id_descripcion" class="form-label">
+                            <i class="fas fa-align-left"></i> {{ form.descripcion.label }}
+                        </label>
+                        {{ form.descripcion }}
+                        {% if form.descripcion.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.descripcion.errors %}
+                                    <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if form.descripcion.help_text %}
+                            <small class="form-text text-muted">{{ form.descripcion.help_text|safe }}</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <!-- Nivel de Acceso -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_nivel_acceso" class="form-label">
+                                    <i class="fas fa-level-up"></i> {{ form.nivel_acceso.label }}
+                                </label>
+                                {{ form.nivel_acceso }}
+                                {% if form.nivel_acceso.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.nivel_acceso.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if form.nivel_acceso.help_text %}
+                                    <small class="form-text text-muted">{{ form.nivel_acceso.help_text|safe }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Activo -->
+                        <div class="col-md-6">
+                            <div class="mb-3 form-check" style="margin-top: 32px;">
+                                {{ form.activo }}
+                                <label for="id_activo" class="form-check-label">
+                                    <i class="fas fa-check-circle"></i> {{ form.activo.label }}
+                                </label>
+                                {% if form.activo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.activo.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Errores generales del formulario -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-times-circle"></i> <strong>Errores en el formulario:</strong>
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Botones de acción -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i> 
+                            {% if accion == 'Crear' %}Crear Rol{% else %}Guardar Cambios{% endif %}
+                        </button>
+                        <a href="{% url 'roles_list' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Nota:</strong> Todos los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

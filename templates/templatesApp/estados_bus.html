@@ -1,0 +1,206 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block title %}Estado de Buses - Sistema de Gestión{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item active">Estado de Buses</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-info-circle"></i> Monitoreo de Estado de Buses
+            </h1>
+        </div>
+
+        <!-- Búsqueda y Filtros -->
+        <div class="search-box">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="form-control" 
+                            placeholder="Buscar por patente o modelo..."
+                            value="{{ search_query }}"
+                        >
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <select name="estado" class="form-select">
+                        <option value="">-- Todos los Estados --</option>
+                        <option value="OPERATIVO" {% if estado_filter == 'OPERATIVO' %}selected{% endif %}>Operativo</option>
+                        <option value="MANTENIMIENTO" {% if estado_filter == 'MANTENIMIENTO' %}selected{% endif %}>En Mantenimiento</option>
+                        <option value="REPARACION" {% if estado_filter == 'REPARACION' %}selected{% endif %}>En Reparación</option>
+                        <option value="FUERA_SERVICIO" {% if estado_filter == 'FUERA_SERVICIO' %}selected{% endif %}>Fuera de Servicio</option>
+                        <option value="RESERVADO" {% if estado_filter == 'RESERVADO' %}selected{% endif %}>Reservado</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Botón para crear nuevo estado -->
+        <div class="mb-3">
+            <a href="{% url 'estado_bus_crear' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-plus"></i> Registrar Nuevo Estado
+            </a>
+        </div>
+
+        <!-- Tabla de estados -->
+        {% if estados %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-id-card"></i> Patente</th>
+                            <th><i class="fas fa-cogs"></i> Modelo</th>
+                            <th><i class="fas fa-info-circle"></i> Estado</th>
+                            <th><i class="fas fa-road"></i> Kilometraje</th>
+                            <th><i class="fas fa-calendar"></i> Cambio</th>
+                            <th><i class="fas fa-tools"></i> Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estado in estados %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-secondary">{{ estado.id }}</span>
+                                </td>
+                                <td><strong>{{ estado.bus_patente }}</strong></td>
+                                <td>{{ estado.bus_modelo }}</td>
+                                <td>
+                                    {% if estado.estado == 'OPERATIVO' %}
+                                        <span class="badge bg-success"><i class="fas fa-check-circle"></i> Operativo</span>
+                                    {% elif estado.estado == 'MANTENIMIENTO' %}
+                                        <span class="badge bg-warning"><i class="fas fa-wrench"></i> Mantenimiento</span>
+                                    {% elif estado.estado == 'REPARACION' %}
+                                        <span class="badge bg-danger"><i class="fas fa-tools"></i> Reparación</span>
+                                    {% elif estado.estado == 'FUERA_SERVICIO' %}
+                                        <span class="badge bg-danger"><i class="fas fa-times-circle"></i> Fuera Servicio</span>
+                                    {% elif estado.estado == 'RESERVADO' %}
+                                        <span class="badge bg-info"><i class="fas fa-lock"></i> Reservado</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ estado.kilometraje }} km</td>
+                                <td><small>{{ estado.fecha_cambio|date:"d/m/Y H:i" }}</small></td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a 
+                                            href="{% url 'estado_bus_detalle' estado.id %}" 
+                                            class="btn btn-info btn-sm" 
+                                            title="Ver detalles"
+                                        >
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+
+                                        <a 
+                                            href="{% url 'estado_bus_editar' estado.id %}" 
+                                            class="btn btn-warning btn-sm" 
+                                            title="Editar estado"
+                                        >
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+
+                                        <a 
+                                            href="{% url 'estado_bus_eliminar' estado.id %}" 
+                                            class="btn btn-danger btn-sm" 
+                                            title="Eliminar estado"
+                                            onclick="return confirm('¿Está seguro de que desea eliminar este estado?')"
+                                        >
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            {% if estados.has_other_pages %}
+                <nav aria-label="Paginación de estados">
+                    <ul class="pagination justify-content-center">
+                        {% if estados.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    <i class="fas fa-chevron-left"></i> Primera
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% if estados.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ estados.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Anterior
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Anterior</span>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Página {{ estados.number }} de {{ estados.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if estados.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ estados.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Siguiente
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <span class="page-link">Siguiente</span>
+                            </li>
+                        {% endif %}
+
+                        {% if estados.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ estados.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if estado_filter %}&estado={{ estado_filter }}{% endif %}">
+                                    Última <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+
+                <div class="alert alert-info text-center">
+                    Total de registros: <strong>{{ estados.paginator.count }}</strong> | 
+                    Página <strong>{{ estados.number }}</strong> de <strong>{{ estados.paginator.num_pages }}</strong>
+                </div>
+            {% endif %}
+
+        {% else %}
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-info-circle"></i>
+                <strong>No hay estados de buses registrados.</strong>
+                {% if search_query or estado_filter %}
+                    <br>Intenta cambiar los filtros de búsqueda.
+                {% else %}
+                    <br><a href="{% url 'estado_bus_crear' %}" class="alert-link">Registra el primer estado de bus</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

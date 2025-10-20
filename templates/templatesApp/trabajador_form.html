@@ -1,0 +1,180 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block title %}
+    {% if accion == 'Crear' %}Crear Trabajador{% else %}Editar Trabajador{% endif %} - Sistema de Gestión
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'trabajadores_list' %}">Trabajadores</a></li>
+                <li class="breadcrumb-item active">{{ accion }}</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado de página -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-user-plus"></i>
+                {% if accion == 'Crear' %}Crear Nuevo Trabajador{% else %}Editar Trabajador{% endif %}
+            </h1>
+        </div>
+
+        <!-- Tarjeta del formulario -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-edit"></i> Formulario de Trabajador
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_nombre" class="form-label">
+                                    <i class="fas fa-user"></i> {{ form.nombre.label }}
+                                </label>
+                                {{ form.nombre }}
+                                {% if form.nombre.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.nombre.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if form.nombre.help_text %}
+                                    <small class="form-text text-muted">{{ form.nombre.help_text|safe }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Apellido -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_apellido" class="form-label">
+                                    <i class="fas fa-user"></i> {{ form.apellido.label }}
+                                </label>
+                                {{ form.apellido }}
+                                {% if form.apellido.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.apellido.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Edad -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_edad" class="form-label">
+                                    <i class="fas fa-calendar"></i> {{ form.edad.label }}
+                                </label>
+                                {{ form.edad }}
+                                {% if form.edad.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.edad.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if form.edad.help_text %}
+                                    <small class="form-text text-muted">{{ form.edad.help_text|safe }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Contacto -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_contacto" class="form-label">
+                                    <i class="fas fa-phone"></i> {{ form.contacto.label }}
+                                </label>
+                                {{ form.contacto }}
+                                {% if form.contacto.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.contacto.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if form.contacto.help_text %}
+                                    <small class="form-text text-muted">{{ form.contacto.help_text|safe }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="mb-3">
+                        <label for="id_direccion" class="form-label">
+                            <i class="fas fa-map-marker-alt"></i> {{ form.direccion.label }}
+                        </label>
+                        {{ form.direccion }}
+                        {% if form.direccion.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.direccion.errors %}
+                                    <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Activo -->
+                    <div class="mb-3 form-check">
+                        {{ form.activo }}
+                        <label for="id_activo" class="form-check-label">
+                            <i class="fas fa-check-circle"></i> {{ form.activo.label }}
+                        </label>
+                        {% if form.activo.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.activo.errors %}
+                                    <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Errores generales del formulario -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-times-circle"></i> <strong>Errores en el formulario:</strong>
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Botones de acción -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i> 
+                            {% if accion == 'Crear' %}Crear Trabajador{% else %}Guardar Cambios{% endif %}
+                        </button>
+                        <a href="{% url 'trabajadores_list' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Nota:</strong> Todos los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

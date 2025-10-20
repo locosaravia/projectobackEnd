@@ -1,0 +1,217 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block title %}{{ bus.patente }} - {{ bus.modelo }} - Sistema de Gestión{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'buses_list' %}">Buses</a></li>
+                <li class="breadcrumb-item active">{{ bus.patente }}</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-bus"></i> {{ bus.patente }} - {{ bus.modelo }}
+            </h1>
+        </div>
+
+        <div class="row">
+            <!-- Información del bus -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Información del Bus
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Patente:</div>
+                                    <div class="detalle-valor">{{ bus.patente }}</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Marca:</div>
+                                    <div class="detalle-valor">{{ bus.marca }}</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Modelo:</div>
+                                    <div class="detalle-valor">{{ bus.modelo }}</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Año:</div>
+                                    <div class="detalle-valor">{{ bus.año }}</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Capacidad:</div>
+                                    <div class="detalle-valor">{{ bus.capacidad }} pasajeros</div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Estado:</div>
+                                    <div class="detalle-valor">
+                                        {% if bus.activo %}
+                                            <span class="badge badge-activo">Activo</span>
+                                        {% else %}
+                                            <span class="badge badge-inactivo">Inactivo</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estado del Bus -->
+                {% if estado %}
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <i class="fas fa-heartbeat"></i> Estado Actual del Bus
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Estado:</div>
+                                        <div class="detalle-valor">
+                                            {% if estado.estado == 'OPERATIVO' %}
+                                                <span class="badge bg-success"><i class="fas fa-check-circle"></i> Operativo</span>
+                                            {% elif estado.estado == 'MANTENIMIENTO' %}
+                                                <span class="badge bg-warning"><i class="fas fa-wrench"></i> Mantenimiento</span>
+                                            {% elif estado.estado == 'REPARACION' %}
+                                                <span class="badge bg-danger"><i class="fas fa-tools"></i> Reparación</span>
+                                            {% elif estado.estado == 'FUERA_SERVICIO' %}
+                                                <span class="badge bg-danger"><i class="fas fa-times-circle"></i> Fuera de Servicio</span>
+                                            {% elif estado.estado == 'RESERVADO' %}
+                                                <span class="badge bg-info"><i class="fas fa-lock"></i> Reservado</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Kilometraje:</div>
+                                        <div class="detalle-valor">{{ estado.kilometraje }} km</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="detalle-item">
+                                        <div class="detalle-label">Último cambio:</div>
+                                        <div class="detalle-valor">{{ estado.fecha_cambio|date:"d/m/Y H:i" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if estado.observaciones %}
+                                <div class="detalle-item mt-3">
+                                    <div class="detalle-label">Observaciones:</div>
+                                    <div class="detalle-valor">{{ estado.observaciones }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Asignaciones del Bus -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <i class="fas fa-user-tie"></i> Asignaciones a Conductores
+                    </div>
+                    <div class="card-body">
+                        {% if asignaciones %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Conductor</th>
+                                            <th>Turno</th>
+                                            <th>Inicio</th>
+                                            <th>Fin</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for asignacion in asignaciones %}
+                                            <tr>
+                                                <td>
+                                                    <strong>{{ asignacion.trabajador_nombre }} {{ asignacion.trabajador_apellido }}</strong>
+                                                </td>
+                                                <td>
+                                                    {% if asignacion.turno == 'MAÑANA' %}
+                                                        <span class="badge bg-warning">Mañana</span>
+                                                    {% elif asignacion.turno == 'TARDE' %}
+                                                        <span class="badge bg-info">Tarde</span>
+                                                    {% elif asignacion.turno == 'NOCHE' %}
+                                                        <span class="badge bg-dark">Noche</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>{{ asignacion.fecha_asignacion|date:"d/m/Y" }}</td>
+                                                <td>
+                                                    {% if asignacion.fecha_finalizacion %}
+                                                        {{ asignacion.fecha_finalizacion|date:"d/m/Y" }}
+                                                    {% else %}
+                                                        <span class="text-muted">-</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if asignacion.activo %}
+                                                        <span class="badge badge-activo">Activa</span>
+                                                    {% else %}
+                                                        <span class="badge badge-inactivo">Inactiva</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No tiene asignaciones de conductores registradas.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de acciones -->
+            <div class="col-md-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <i class="fas fa-cogs"></i> Acciones
+                    </div>
+                    <div class="card-body d-flex flex-column gap-2">
+                        <a href="{% url 'bus_editar' bus.id %}" class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+
+                        <a href="{% url 'bus_eliminar' bus.id %}" class="btn btn-danger btn-lg" onclick="return confirm('¿Está seguro de que desea eliminar este bus?')">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+
+                        <a href="{% url 'buses_list' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-list"></i> Ver Todos
+                        </a>
+
+                        <a href="{% url 'index' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Información
+                    </div>
+                    <div class="card-body">
+                        <p><strong>ID:</strong> {{ bus.id }}</p>
+                        <p><strong>Patente:</strong> {{ bus.patente }}</p>
+                        <p><strong>Año:</strong> {{ bus.año }}</p>
+                        <p><strong>Capacidad:</strong> {{ bus.capacidad }} pasajeros</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

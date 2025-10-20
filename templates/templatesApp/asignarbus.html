@@ -1,66 +1,54 @@
-<!DOCTYPE html>
-{% load static %} <!-- Importa las etiquetas de Django para trabajar con archivos estáticos (CSS, JS, imágenes) -->
+{% extends 'base.html' %}
+{% load static %}
 
-<html lang="en">
-<head>
-    <meta charset="UTF-8"> <!-- Soporte para caracteres especiales (tildes, ñ, etc.) -->
-    <meta name="viewport" content="width=7, initial-scale=1.0"> <!-- Configuración adaptable a pantallas (aunque width=7 parece un error tipográfico, debería ser width=device-width) -->
-    <title>Document</title> <!-- Título de la pestaña en el navegador -->
+{% block title %}Estado de Buses{% endblock %}
 
-    <!-- Importación de la hoja de estilos personalizada -->
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-</head>
-<body>
-    
-    <!-- Barra de navegación -->
-    <ul class="navbar">
-        <li><a href="http://127.0.0.1:8000/index/">Menu</a></li>
-        <li><a href="http://127.0.0.1:8000/trabajadores/">Trabajadores</a></li>
-        <li><a href="http://127.0.0.1:8000/rol/">Roles</a></li>
-        <li><a href="http://127.0.0.1:8000/estadoB/">Estado Bus</a></li>
-        <li><a href="http://127.0.0.1:8000/asignarR/">Asignar Rol</a></li>
-        <li><a href="http://127.0.0.1:8000/buses">Buses</a></li>
-    </ul>
+{% block content %}
+<div class="container">
+    <div class="page-header mb-4">
+        <h1><i class="fas fa-info-circle"></i> Estado de Bus Asignado</h1>
+    </div>
 
-    <!-- Contenedor principal -->
-    <div class="div2">
-
-        <!-- Encabezado -->
-        <div class="div1">
-            <h1>estado</h1> <!-- Título de la sección -->
+    <!-- Tabla de estado del bus -->
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-bus"></i> Detalle del Estado
         </div>
-
-        <!-- Tabla de estado de bus asignado -->
-        <table style="width: 100%;">
-            <tr>
-                <th>id trabajador</th> <!-- Identificador del trabajador -->
-                <th>Bus Asignado</th> <!-- Bus que se le ha asignado -->
-            </tr>
-            <tr>
-                <!-- Variables dinámicas enviadas desde Django -->
-                <td>{{ id_trabajador }}</td>
-                <td>{{ bus_asignado }}</td>
-            </tr>
-        </table>
-        <br><br>
-
-        <!-- Botones de acción -->
-        <div>
-            <!-- Vuelve al menú principal -->
-            <button onclick="location.href='http://127.0.0.1:8000/index/'" class="botones" type="button">Regresar</button>
-            
-            <!-- Redirige a la vista donde se puede cambiar el bus asignado -->
-            <button onclick="location.href='http://127.0.0.1:8000/cambiarbus/'" class="botones" type="button">cambiar bus</button>
-            <br><br> 
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID Trabajador</th>
+                            <th>Bus Asignado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ id_trabajador }}</td>
+                            <td>{{ bus_asignado }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-    <br><br><br> 
 
-    <!-- Imágenes decorativas de buses -->
-    <img src="{% static 'img/bus-hualpen.png' %}" width="30%" alt="Bus Hualpén">
-    <img class="bus1" src="{% static 'img/bus1.png' %}" width="25%" alt="Bus lateral">
-    <img class="bus2" src="{% static 'img/bus-derecha.png' %}" width="30%" alt="Bus derecho">
+    <!-- Botones de acción -->
+    <div class="mt-4 d-flex justify-content-center gap-3">
+        <a href="{% url 'index' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Regresar
+        </a>
+        <a href="{% url 'cambiarbus' %}" class="btn btn-primary">
+            <i class="fas fa-exchange-alt"></i> Cambiar Bus
+        </a>
+    </div>
 
-</body>
-</html>
-<!--  -->
+    <!-- Imágenes decorativas -->
+    <div class="text-center mt-5">
+        <img src="{% static 'img/bus-hualpen.png' %}" alt="Bus Hualpén" width="25%" class="mx-2">
+        <img src="{% static 'img/bus1.png' %}" alt="Bus lateral" width="20%" class="mx-2">
+        <img src="{% static 'img/bus-derecha.png' %}" alt="Bus derecho" width="25%" class="mx-2">
+    </div>
+</div>
+{% endblock %}

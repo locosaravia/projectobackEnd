@@ -1,0 +1,154 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block title %}{{ rol.nombre }} - Sistema de Gestión{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'roles_list' %}">Roles</a></li>
+                <li class="breadcrumb-item active">{{ rol.nombre }}</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-briefcase"></i> {{ rol.nombre }}
+            </h1>
+        </div>
+
+        <div class="row">
+            <!-- Información del rol -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Información del Rol
+                    </div>
+                    <div class="card-body">
+                        <div class="detalle-item">
+                            <div class="detalle-label">Nombre:</div>
+                            <div class="detalle-valor">{{ rol.nombre }}</div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Descripción:</div>
+                            <div class="detalle-valor">
+                                {% if rol.descripcion %}
+                                    {{ rol.descripcion }}
+                                {% else %}
+                                    <span class="text-muted">Sin descripción</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Nivel de Acceso:</div>
+                            <div class="detalle-valor">
+                                <span class="badge bg-info">Nivel {{ rol.nivel_acceso }}</span>
+                            </div>
+                        </div>
+                        <div class="detalle-item">
+                            <div class="detalle-label">Estado:</div>
+                            <div class="detalle-valor">
+                                {% if rol.activo %}
+                                    <span class="badge badge-activo">Activo</span>
+                                {% else %}
+                                    <span class="badge badge-inactivo">Inactivo</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trabajadores con este rol -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <i class="fas fa-users"></i> Trabajadores Asignados
+                    </div>
+                    <div class="card-body">
+                        {% if asignaciones %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Trabajador</th>
+                                            <th>Inicio</th>
+                                            <th>Fin</th>
+                                            <th>Estado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for asignacion in asignaciones %}
+                                            <tr>
+                                                <td>
+                                                    <strong>{{ asignacion.trabajador_nombre }} {{ asignacion.trabajador_apellido }}</strong>
+                                                </td>
+                                                <td>{{ asignacion.fecha_asignacion|date:"d/m/Y" }}</td>
+                                                <td>
+                                                    {% if asignacion.fecha_finalizacion %}
+                                                        {{ asignacion.fecha_finalizacion|date:"d/m/Y" }}
+                                                    {% else %}
+                                                        <span class="text-muted">-</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if asignacion.activo %}
+                                                        <span class="badge badge-activo">Activa</span>
+                                                    {% else %}
+                                                        <span class="badge badge-inactivo">Inactiva</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No hay trabajadores asignados a este rol.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de acciones -->
+            <div class="col-md-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <i class="fas fa-cogs"></i> Acciones
+                    </div>
+                    <div class="card-body d-flex flex-column gap-2">
+                        <a href="{% url 'rol_editar' rol.id %}" class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+
+                        <a href="{% url 'rol_eliminar' rol.id %}" class="btn btn-danger btn-lg" onclick="return confirm('¿Está seguro de que desea eliminar este rol?')">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+
+                        <a href="{% url 'roles_list' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-list"></i> Ver Todos
+                        </a>
+
+                        <a href="{% url 'index' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Información
+                    </div>
+                    <div class="card-body">
+                        <p><strong>ID:</strong> {{ rol.id }}</p>
+                        <p><strong>Nombre:</strong> {{ rol.nombre }}</p>
+                        <p><strong>Nivel:</strong> {{ rol.nivel_acceso }}</p>
+                        <p><strong>Total Asignaciones:</strong> {{ asignaciones|length }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
