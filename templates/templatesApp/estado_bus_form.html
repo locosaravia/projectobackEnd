@@ -1,0 +1,157 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block title %}{% if accion == 'Crear' %}Registrar Estado de Bus{% else %}Editar Estado de Bus{% endif %} - Sistema de Gestión{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'estados_bus_list' %}">Estado de Buses</a></li>
+                <li class="breadcrumb-item active">{{ accion }}</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado de página -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-info-circle"></i>
+                {% if accion == 'Crear' %}Registrar Nuevo Estado de Bus{% else %}Editar Estado de Bus{% endif %}
+            </h1>
+        </div>
+
+        <!-- Tarjeta del formulario -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-edit"></i> Formulario de Estado de Bus
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="row">
+                        <!-- Patente del Bus -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_bus_patente" class="form-label">
+                                    <i class="fas fa-id-card"></i> {{ form.bus_patente.label }}
+                                </label>
+                                {{ form.bus_patente }}
+                                {% if form.bus_patente.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.bus_patente.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Modelo del Bus -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_bus_modelo" class="form-label">
+                                    <i class="fas fa-cogs"></i> {{ form.bus_modelo.label }}
+                                </label>
+                                {{ form.bus_modelo }}
+                                {% if form.bus_modelo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.bus_modelo.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Estado -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_estado" class="form-label">
+                                    <i class="fas fa-info-circle"></i> {{ form.estado.label }}
+                                </label>
+                                {{ form.estado }}
+                                {% if form.estado.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.estado.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Kilometraje -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_kilometraje" class="form-label">
+                                    <i class="fas fa-road"></i> {{ form.kilometraje.label }}
+                                </label>
+                                {{ form.kilometraje }}
+                                {% if form.kilometraje.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.kilometraje.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="mb-3">
+                        <label for="id_observaciones" class="form-label">
+                            <i class="fas fa-align-left"></i> {{ form.observaciones.label }}
+                        </label>
+                        {{ form.observaciones }}
+                        {% if form.observaciones.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.observaciones.errors %}
+                                    <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if form.observaciones.help_text %}
+                            <small class="form-text text-muted">{{ form.observaciones.help_text|safe }}</small>
+                        {% endif %}
+                    </div>
+
+                    <!-- Errores generales del formulario -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-times-circle"></i> <strong>Errores en el formulario:</strong>
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Botones de acción -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i> 
+                            {% if accion == 'Crear' %}Registrar Estado{% else %}Guardar Cambios{% endif %}
+                        </button>
+                        <a href="{% url 'estados_bus_list' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Nota:</strong> Todos los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

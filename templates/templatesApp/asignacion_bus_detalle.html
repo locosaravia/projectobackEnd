@@ -1,0 +1,175 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block title %}Asignación de Bus - Sistema de Gestión{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'asignaciones_bus_list' %}">Asignaciones de Buses</a></li>
+                <li class="breadcrumb-item active">Detalle</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-exchange-alt"></i> Asignación de Bus
+            </h1>
+        </div>
+
+        <!-- Información de la asignación -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Información de la Asignación
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">ID Trabajador:</div>
+                                    <div class="detalle-valor">
+                                        {{ asignacion.trabajador_id }}
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Nombre Trabajador:</div>
+                                    <div class="detalle-valor">
+                                        {{ asignacion.trabajador_nombre }}
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Apellido Trabajador:</div>
+                                    <div class="detalle-valor">
+                                        {{ asignacion.trabajador_apellido }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">ID Bus:</div>
+                                    <div class="detalle-valor">
+                                        {{ asignacion.bus_id }}
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Patente Bus:</div>
+                                    <div class="detalle-valor">
+                                        <strong>{{ asignacion.bus_patente }}</strong>
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Modelo Bus:</div>
+                                    <div class="detalle-valor">
+                                        {{ asignacion.bus_modelo }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Turno:</div>
+                                    <div class="detalle-valor">
+                                        {% if asignacion.turno == 'MAÑANA' %}
+                                            <span class="badge bg-warning"><i class="fas fa-sun"></i> Mañana</span>
+                                        {% elif asignacion.turno == 'TARDE' %}
+                                            <span class="badge bg-info"><i class="fas fa-cloud"></i> Tarde</span>
+                                        {% elif asignacion.turno == 'NOCHE' %}
+                                            <span class="badge bg-dark"><i class="fas fa-moon"></i> Noche</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Fecha Inicio:</div>
+                                    <div class="detalle-valor">
+                                        {{ asignacion.fecha_asignacion|date:"d/m/Y" }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Fecha Fin:</div>
+                                    <div class="detalle-valor">
+                                        {% if asignacion.fecha_finalizacion %}
+                                            {{ asignacion.fecha_finalizacion|date:"d/m/Y" }}
+                                        {% else %}
+                                            <span class="text-muted">Sin definir</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Estado:</div>
+                                    <div class="detalle-valor">
+                                        {% if asignacion.activo %}
+                                            <span class="badge badge-activo">
+                                                <i class="fas fa-check-circle"></i> Activa
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-inactivo">
+                                                <i class="fas fa-times-circle"></i> Inactiva
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de acciones -->
+            <div class="col-md-4">
+                <div class="card sticky-top" style="top: 20px;">
+                    <div class="card-header">
+                        <i class="fas fa-cogs"></i> Acciones
+                    </div>
+                    <div class="card-body d-flex flex-column gap-2">
+                        <a href="{% url 'asignacion_bus_editar' asignacion.id %}" class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+
+                        <a href="{% url 'asignacion_bus_eliminar' asignacion.id %}" class="btn btn-danger btn-lg" onclick="return confirm('¿Eliminar esta asignación?')">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </a>
+
+                        <a href="{% url 'asignaciones_bus_list' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-list"></i> Ver Todas
+                        </a>
+
+                        <a href="{% url 'index' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Información adicional -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <i class="fas fa-info-circle"></i> Información
+                    </div>
+                    <div class="card-body">
+                        <p><strong>ID Asignación:</strong> {{ asignacion.id }}</p>
+                        <p><strong>Trabajador:</strong> {{ asignacion.trabajador_nombre }} {{ asignacion.trabajador_apellido }}</p>
+                        <p><strong>Bus:</strong> {{ asignacion.bus_patente }}</p>
+                        <p><strong>Turno:</strong> {{ asignacion.turno }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

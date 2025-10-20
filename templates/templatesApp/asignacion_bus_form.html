@@ -1,0 +1,238 @@
+{% extends 'templatesApp/base.html' %}
+
+{% block title %}{% if accion == 'Crear' %}Crear Asignación de Bus{% else %}Editar Asignación de Bus{% endif %} - Sistema de Gestión{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'asignaciones_bus_list' %}">Asignaciones de Buses</a></li>
+                <li class="breadcrumb-item active">{{ accion }}</li>
+            </ol>
+        </nav>
+
+        <!-- Encabezado de página -->
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-exchange-alt"></i>
+                {% if accion == 'Crear' %}Crear Nueva Asignación de Bus{% else %}Editar Asignación de Bus{% endif %}
+            </h1>
+        </div>
+
+        <!-- Tarjeta del formulario -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-edit"></i> Formulario de Asignación de Bus
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Información del Trabajador -->
+                    <div class="mb-3">
+                        <h5 class="mb-3">
+                            <i class="fas fa-user"></i> Información del Trabajador
+                        </h5>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="id_trabajador_id" class="form-label">
+                                    <i class="fas fa-hashtag"></i> {{ form.trabajador_id.label }}
+                                </label>
+                                {{ form.trabajador_id }}
+                                {% if form.trabajador_id.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.trabajador_id.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="id_trabajador_nombre" class="form-label">
+                                    <i class="fas fa-user"></i> {{ form.trabajador_nombre.label }}
+                                </label>
+                                {{ form.trabajador_nombre }}
+                                {% if form.trabajador_nombre.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.trabajador_nombre.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="id_trabajador_apellido" class="form-label">
+                                    <i class="fas fa-user"></i> {{ form.trabajador_apellido.label }}
+                                </label>
+                                {{ form.trabajador_apellido }}
+                                {% if form.trabajador_apellido.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.trabajador_apellido.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información del Bus -->
+                    <div class="mb-3 mt-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-bus"></i> Información del Bus
+                        </h5>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="id_bus_id" class="form-label">
+                                    <i class="fas fa-hashtag"></i> {{ form.bus_id.label }}
+                                </label>
+                                {{ form.bus_id }}
+                                {% if form.bus_id.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.bus_id.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="id_bus_patente" class="form-label">
+                                    <i class="fas fa-id-card"></i> {{ form.bus_patente.label }}
+                                </label>
+                                {{ form.bus_patente }}
+                                {% if form.bus_patente.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.bus_patente.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_bus_modelo" class="form-label">
+                                    <i class="fas fa-cogs"></i> {{ form.bus_modelo.label }}
+                                </label>
+                                {{ form.bus_modelo }}
+                                {% if form.bus_modelo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.bus_modelo.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Turno y Fechas -->
+                    <div class="mb-3 mt-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-clock"></i> Turno y Fechas
+                        </h5>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="id_turno" class="form-label">
+                                    <i class="fas fa-clock"></i> {{ form.turno.label }}
+                                </label>
+                                {{ form.turno }}
+                                {% if form.turno.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.turno.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="id_fecha_finalizacion" class="form-label">
+                                    <i class="fas fa-calendar-check"></i> {{ form.fecha_finalizacion.label }}
+                                </label>
+                                {{ form.fecha_finalizacion }}
+                                {% if form.fecha_finalizacion.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.fecha_finalizacion.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="mb-3 form-check" style="margin-top: 32px;">
+                                {{ form.activo }}
+                                <label for="id_activo" class="form-check-label">
+                                    <i class="fas fa-check-circle"></i> {{ form.activo.label }}
+                                </label>
+                                {% if form.activo.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.activo.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Errores generales del formulario -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-times-circle"></i> <strong>Errores en el formulario:</strong>
+                            {% for error in form.non_field_errors %}
+                                <div>{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Botones de acción -->
+                    <div class="d-flex gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save"></i> 
+                            {% if accion == 'Crear' %}Crear Asignación{% else %}Guardar Cambios{% endif %}
+                        </button>
+                        <a href="{% url 'asignaciones_bus_list' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-arrow-left"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Nota:</strong> Todos los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
