@@ -1,9 +1,13 @@
 from django.urls import path
+from django.views.generic import RedirectView
 from . import views
 
 urlpatterns = [
+    # Redirigir la raíz al login
+    path('', RedirectView.as_view(url='login/', permanent=False)),
+    
     # Vista principal
-    path('', views.index, name='index'),
+    path('index/', views.index, name='index'),
     path('login/', views.login1, name='login'),
     
     # CRUD Trabajadores

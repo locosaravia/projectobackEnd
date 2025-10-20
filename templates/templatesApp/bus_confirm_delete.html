@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Eliminación de Rol</title>
+</head>
+<body>
+    <h1>Confirmar Eliminación de Bus</h1>
+    <p>¿Estás seguro de que deseas eliminar el bus "{{ bus.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmar</button>
+        <a href="{% url 'buses_list' %}">Cancelar</a>
+    </form>
+</body>
+</html> 

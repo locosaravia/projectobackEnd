@@ -227,8 +227,7 @@
 
     <!-- Script para redirigir al index si login es exitoso -->
     <script>
-        // Si el login es exitoso, redirigir a index
-        // Este script se ejecutará después de que Django procese el formulario
+
         if (document.querySelector('.alert-success')) {
             setTimeout(function() {
                 window.location.href = "{% url 'index' %}";
