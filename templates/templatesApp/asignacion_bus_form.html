@@ -38,50 +38,21 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-12">
                             <div class="mb-3">
-                                <label for="id_trabajador_id" class="form-label">
-                                    <i class="fas fa-hashtag"></i> {{ form.trabajador_id.label }}
+                                <label for="id_trabajador" class="form-label">
+                                    <i class="fas fa-user"></i> {{ form.trabajador.label }}
                                 </label>
-                                {{ form.trabajador_id }}
-                                {% if form.trabajador_id.errors %}
+                                {{ form.trabajador }}
+                                {% if form.trabajador.errors %}
                                     <div class="invalid-feedback d-block">
-                                        {% for error in form.trabajador_id.errors %}
+                                        {% for error in form.trabajador.errors %}
                                             <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_trabajador_nombre" class="form-label">
-                                    <i class="fas fa-user"></i> {{ form.trabajador_nombre.label }}
-                                </label>
-                                {{ form.trabajador_nombre }}
-                                {% if form.trabajador_nombre.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.trabajador_nombre.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_trabajador_apellido" class="form-label">
-                                    <i class="fas fa-user"></i> {{ form.trabajador_apellido.label }}
-                                </label>
-                                {{ form.trabajador_apellido }}
-                                {% if form.trabajador_apellido.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.trabajador_apellido.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
+                                {% if form.trabajador.help_text %}
+                                    <small class="form-text text-muted">{{ form.trabajador.help_text }}</small>
                                 {% endif %}
                             </div>
                         </div>
@@ -95,50 +66,21 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-12">
                             <div class="mb-3">
-                                <label for="id_bus_id" class="form-label">
-                                    <i class="fas fa-hashtag"></i> {{ form.bus_id.label }}
+                                <label for="id_bus" class="form-label">
+                                    <i class="fas fa-bus"></i> {{ form.bus.label }}
                                 </label>
-                                {{ form.bus_id }}
-                                {% if form.bus_id.errors %}
+                                {{ form.bus }}
+                                {% if form.bus.errors %}
                                     <div class="invalid-feedback d-block">
-                                        {% for error in form.bus_id.errors %}
+                                        {% for error in form.bus.errors %}
                                             <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="mb-3">
-                                <label for="id_bus_patente" class="form-label">
-                                    <i class="fas fa-id-card"></i> {{ form.bus_patente.label }}
-                                </label>
-                                {{ form.bus_patente }}
-                                {% if form.bus_patente.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.bus_patente.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="id_bus_modelo" class="form-label">
-                                    <i class="fas fa-cogs"></i> {{ form.bus_modelo.label }}
-                                </label>
-                                {{ form.bus_modelo }}
-                                {% if form.bus_modelo.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.bus_modelo.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
+                                {% if form.bus.help_text %}
+                                    <small class="form-text text-muted">{{ form.bus.help_text }}</small>
                                 {% endif %}
                             </div>
                         </div>
@@ -165,6 +107,9 @@
                                         {% endfor %}
                                     </div>
                                 {% endif %}
+                                {% if form.turno.help_text %}
+                                    <small class="form-text text-muted">{{ form.turno.help_text }}</small>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -181,6 +126,9 @@
                                         {% endfor %}
                                     </div>
                                 {% endif %}
+                                {% if form.fecha_finalizacion.help_text %}
+                                    <small class="form-text text-muted">{{ form.fecha_finalizacion.help_text }}</small>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -196,6 +144,34 @@
                                             <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
                                         {% endfor %}
                                     </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notas Adicionales -->
+                    <div class="mb-3 mt-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-sticky-note"></i> Notas Adicionales (Opcional)
+                        </h5>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="id_notas" class="form-label">
+                                    <i class="fas fa-comment"></i> {{ form.notas.label }}
+                                </label>
+                                {{ form.notas }}
+                                {% if form.notas.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.notas.errors %}
+                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                {% if form.notas.help_text %}
+                                    <small class="form-text text-muted">{{ form.notas.help_text }}</small>
                                 {% endif %}
                             </div>
                         </div>
@@ -230,7 +206,7 @@
             <div class="col-md-8">
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle"></i>
-                    <strong>Nota:</strong> Todos los campos marcados con <span class="text-danger">*</span> son obligatorios.
+                    <strong>Nota:</strong> Seleccione el trabajador y el bus desde los menús desplegables. Solo se mostrarán trabajadores y buses activos.
                 </div>
             </div>
         </div>

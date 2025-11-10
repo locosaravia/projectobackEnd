@@ -1,9 +1,11 @@
-
 from django import forms
+from django.db import models 
+from django.db.models import Q
 from .models import Trabajador, Rol, Bus, EstadoBus, AsignacionRol, AsignacionBus
 from django.core.exceptions import ValidationError
 import re
 from datetime import date
+
 
 class TrabajadorForm(forms.ModelForm):
     class Meta:
@@ -82,7 +84,6 @@ class TrabajadorForm(forms.ModelForm):
     def clean_contacto(self):
         contacto = self.cleaned_data.get('contacto')
         if contacto:
-           
             contacto_limpio = re.sub(r'[\s\-]', '', contacto)
             if not re.match(r'^\+?[0-9]{8,15}$', contacto_limpio):
                 raise ValidationError('Formato de teléfono inválido. Debe contener entre 8 y 15 dígitos')
@@ -257,16 +258,10 @@ class BusForm(forms.ModelForm):
 class EstadoBusForm(forms.ModelForm):
     class Meta:
         model = EstadoBus
-        fields = ['bus_patente', 'bus_modelo', 'estado', 'observaciones', 'kilometraje']
+        fields = ['bus', 'estado', 'observaciones', 'kilometraje']
         widgets = {
-            'bus_patente': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'ABC-123',
-                'style': 'text-transform: uppercase;'
-            }),
-            'bus_modelo': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Modelo del bus'
+            'bus': forms.Select(attrs={
+                'class': 'form-control'
             }),
             'estado': forms.Select(attrs={
                 'class': 'form-control'
@@ -278,24 +273,32 @@ class EstadoBusForm(forms.ModelForm):
             }),
             'kilometraje': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'min': '0'
+                'min': '0',
+                'placeholder': 'Kilometraje actual del bus'
             })
         }
         labels = {
-            'bus_patente': 'Patente del Bus',
-            'bus_modelo': 'Modelo del Bus',
+            'bus': 'Bus',
             'estado': 'Estado Actual',
             'observaciones': 'Observaciones',
             'kilometraje': 'Kilometraje Actual'
         }
+        help_texts = {
+            'bus': 'Seleccione el bus al que desea asignar un estado',
+            'estado': 'Estado operativo del bus',
+            'kilometraje': 'Ingrese el kilometraje actual del bus'
+        }
 
-    def clean_bus_patente(self):
-        patente = self.cleaned_data.get('bus_patente')
-        if patente:
-            patente = patente.upper().strip()
-            if not re.match(r'^[A-Z0-9]{2,4}[-]?[A-Z0-9]{2,4}$', patente):
-                raise ValidationError('Formato de patente inválido')
-        return patente
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtrar solo buses activos
+        self.fields['bus'].queryset = Bus.objects.filter(activo=True)
+        
+        # Si estamos editando, permitir el bus actual aunque esté inactivo
+        if self.instance.pk and self.instance.bus:
+            self.fields['bus'].queryset = Bus.objects.filter(
+                models.Q(activo=True) | models.Q(pk=self.instance.bus.pk)
+            )
 
     def clean_kilometraje(self):
         kilometraje = self.cleaned_data.get('kilometraje')
@@ -314,7 +317,7 @@ class EstadoBusForm(forms.ModelForm):
         if estado in ['MANTENIMIENTO', 'REPARACION', 'FUERA_SERVICIO']:
             if not observaciones or len(observaciones.strip()) < 10:
                 raise ValidationError(
-                    f'Para el estado "{estado}" debe proporcionar observaciones detalladas (mínimo 10 caracteres)'
+                    f'Para el estado "{dict(EstadoBus.ESTADOS_CHOICES).get(estado)}" debe proporcionar observaciones detalladas (mínimo 10 caracteres)'
                 )
         
         return cleaned_data
@@ -323,40 +326,56 @@ class EstadoBusForm(forms.ModelForm):
 class AsignacionRolForm(forms.ModelForm):
     class Meta:
         model = AsignacionRol
-        fields = ['trabajador_nombre', 'trabajador_apellido', 'trabajador_id', 
-                  'rol_nombre', 'rol_id', 'fecha_finalizacion', 'activo']
+        fields = ['trabajador', 'rol', 'fecha_finalizacion', 'activo', 'notas']
         widgets = {
-            'trabajador_nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'trabajador_apellido': forms.TextInput(attrs={'class': 'form-control'}),
-            'trabajador_id': forms.NumberInput(attrs={'class': 'form-control'}),
-            'rol_nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'rol_id': forms.NumberInput(attrs={'class': 'form-control'}),
+            'trabajador': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'rol': forms.Select(attrs={
+                'class': 'form-control'
+            }),
             'fecha_finalizacion': forms.DateInput(attrs={
                 'class': 'form-control',
                 'type': 'date'
             }),
-            'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            'activo': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+            'notas': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Notas adicionales sobre la asignación...'
+            })
+        }
+        labels = {
+            'trabajador': 'Trabajador',
+            'rol': 'Rol a Asignar',
+            'fecha_finalizacion': 'Fecha de Finalización',
+            'activo': '¿Asignación Activa?',
+            'notas': 'Notas'
+        }
+        help_texts = {
+            'trabajador': 'Seleccione el trabajador al que asignará el rol',
+            'rol': 'Seleccione el rol a asignar',
+            'fecha_finalizacion': 'Opcional: fecha en que finaliza la asignación'
         }
 
-    def clean_trabajador_id(self):
-        trabajador_id = self.cleaned_data.get('trabajador_id')
-        if trabajador_id:
-            if trabajador_id <= 0:
-                raise ValidationError('El ID del trabajador debe ser positivo')
-            
-            if not Trabajador.objects.filter(id=trabajador_id).exists():
-                raise ValidationError('No existe un trabajador con este ID')
-        return trabajador_id
-
-    def clean_rol_id(self):
-        rol_id = self.cleaned_data.get('rol_id')
-        if rol_id:
-            if rol_id <= 0:
-                raise ValidationError('El ID del rol debe ser positivo')
-            
-            if not Rol.objects.filter(id=rol_id).exists():
-                raise ValidationError('No existe un rol con este ID')
-        return rol_id
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtrar solo trabajadores y roles activos
+        self.fields['trabajador'].queryset = Trabajador.objects.filter(activo=True)
+        self.fields['rol'].queryset = Rol.objects.filter(activo=True)
+        
+        # Si estamos editando, permitir el trabajador/rol actual aunque estén inactivos
+        if self.instance.pk:
+            if self.instance.trabajador:
+                self.fields['trabajador'].queryset = Trabajador.objects.filter(
+                    models.Q(activo=True) | models.Q(pk=self.instance.trabajador.pk)
+                )
+            if self.instance.rol:
+                self.fields['rol'].queryset = Rol.objects.filter(
+                    models.Q(activo=True) | models.Q(pk=self.instance.rol.pk)
+                )
 
     def clean_fecha_finalizacion(self):
         fecha_fin = self.cleaned_data.get('fecha_finalizacion')
@@ -365,67 +384,119 @@ class AsignacionRolForm(forms.ModelForm):
                 raise ValidationError('La fecha de finalización no puede ser en el pasado')
         return fecha_fin
 
-
-class AsignacionBusForm(forms.ModelForm):
-    class Meta:
-        model = AsignacionBus
-        fields = ['trabajador_nombre', 'trabajador_apellido', 'trabajador_id',
-                  'bus_patente', 'bus_modelo', 'bus_id', 'fecha_finalizacion', 
-                  'turno', 'activo']
-        widgets = {
-            'trabajador_nombre': forms.TextInput(attrs={'class': 'form-control'}),
-            'trabajador_apellido': forms.TextInput(attrs={'class': 'form-control'}),
-            'trabajador_id': forms.NumberInput(attrs={'class': 'form-control'}),
-            'bus_patente': forms.TextInput(attrs={
-                'class': 'form-control',
-                'style': 'text-transform: uppercase;'
-            }),
-            'bus_modelo': forms.TextInput(attrs={'class': 'form-control'}),
-            'bus_id': forms.NumberInput(attrs={'class': 'form-control'}),
-            'fecha_finalizacion': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date'
-            }),
-            'turno': forms.Select(attrs={'class': 'form-control'}),
-            'activo': forms.CheckboxInput(attrs={'class': 'form-check-input'})
-        }
-
-    def clean_trabajador_id(self):
-        trabajador_id = self.cleaned_data.get('trabajador_id')
-        if trabajador_id:
-            if trabajador_id <= 0:
-                raise ValidationError('El ID del trabajador debe ser positivo')
-            if not Trabajador.objects.filter(id=trabajador_id).exists():
-                raise ValidationError('No existe un trabajador con este ID')
-        return trabajador_id
-
-    def clean_bus_id(self):
-        bus_id = self.cleaned_data.get('bus_id')
-        if bus_id:
-            if bus_id <= 0:
-                raise ValidationError('El ID del bus debe ser positivo')
-            if not Bus.objects.filter(id=bus_id).exists():
-                raise ValidationError('No existe un bus con este ID')
-        return bus_id
-
     def clean(self):
         cleaned_data = super().clean()
-        trabajador_id = cleaned_data.get('trabajador_id')
-        bus_id = cleaned_data.get('bus_id')
-        turno = cleaned_data.get('turno')
+        trabajador = cleaned_data.get('trabajador')
+        rol = cleaned_data.get('rol')
         activo = cleaned_data.get('activo')
         
-        if trabajador_id and bus_id and activo:
-            existe = AsignacionBus.objects.filter(
-                trabajador_id=trabajador_id,
-                bus_id=bus_id,
+        # Validar que no exista otra asignación activa igual
+        if trabajador and rol and activo:
+            existe = AsignacionRol.objects.filter(
+                trabajador=trabajador,
+                rol=rol,
                 activo=True
             )
-
+            
             if self.instance.pk:
                 existe = existe.exclude(pk=self.instance.pk)
             
             if existe.exists():
-                raise ValidationError('Ya existe una asignación activa para este trabajador y bus')
+                raise ValidationError(
+                    f'Ya existe una asignación activa del rol "{rol}" para {trabajador}'
+                )
+        
+        return cleaned_data
+
+
+class AsignacionBusForm(forms.ModelForm):
+    class Meta:
+        model = AsignacionBus
+        fields = ['trabajador', 'bus', 'fecha_finalizacion', 'turno', 'activo', 'notas']
+        widgets = {
+            'trabajador': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'bus': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'fecha_finalizacion': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'turno': forms.Select(attrs={
+                'class': 'form-control'
+            }),
+            'activo': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+            'notas': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Notas adicionales sobre la asignación...'
+            })
+        }
+        labels = {
+            'trabajador': 'Trabajador',
+            'bus': 'Bus a Asignar',
+            'fecha_finalizacion': 'Fecha de Finalización',
+            'turno': 'Turno',
+            'activo': '¿Asignación Activa?',
+            'notas': 'Notas'
+        }
+        help_texts = {
+            'trabajador': 'Seleccione el trabajador al que asignará el bus',
+            'bus': 'Seleccione el bus a asignar',
+            'turno': 'Seleccione el turno de trabajo',
+            'fecha_finalizacion': 'Opcional: fecha en que finaliza la asignación'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtrar solo trabajadores y buses activos
+        self.fields['trabajador'].queryset = Trabajador.objects.filter(activo=True)
+        self.fields['bus'].queryset = Bus.objects.filter(activo=True)
+        
+        # Si estamos editando, permitir el trabajador/bus actual aunque estén inactivos
+        if self.instance.pk:
+            if self.instance.trabajador:
+                self.fields['trabajador'].queryset = Trabajador.objects.filter(
+                    models.Q(activo=True) | models.Q(pk=self.instance.trabajador.pk)
+                )
+            if self.instance.bus:
+                self.fields['bus'].queryset = Bus.objects.filter(
+                    models.Q(activo=True) | models.Q(pk=self.instance.bus.pk)
+                )
+
+    def clean_fecha_finalizacion(self):
+        fecha_fin = self.cleaned_data.get('fecha_finalizacion')
+        if fecha_fin:
+            if fecha_fin < date.today():
+                raise ValidationError('La fecha de finalización no puede ser en el pasado')
+        return fecha_fin
+
+    def clean(self):
+        cleaned_data = super().clean()
+        trabajador = cleaned_data.get('trabajador')
+        bus = cleaned_data.get('bus')
+        turno = cleaned_data.get('turno')
+        activo = cleaned_data.get('activo')
+        
+        # Validar que no exista otra asignación activa igual
+        if trabajador and bus and turno and activo:
+            existe = AsignacionBus.objects.filter(
+                trabajador=trabajador,
+                bus=bus,
+                turno=turno,
+                activo=True
+            )
+            
+            if self.instance.pk:
+                existe = existe.exclude(pk=self.instance.pk)
+            
+            if existe.exists():
+                raise ValidationError(
+                    f'Ya existe una asignación activa del bus "{bus.patente}" para {trabajador} en el turno {turno}'
+                )
         
         return cleaned_data

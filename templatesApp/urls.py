@@ -8,7 +8,7 @@ urlpatterns = [
     
     # Vista principal
     path('index/', views.index, name='index'),
-    path('login/', views.login1, name='login'),
+    path('login/', views.login_view, name='login'),
     
     # CRUD Trabajadores
     path('trabajadores/', views.trabajadores_list, name='trabajadores_list'),

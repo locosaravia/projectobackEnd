@@ -1,36 +1,75 @@
-# templatesApp/views.py
+# templatesApp/views.py - ARCHIVO COMPLETO
 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
+from django.db.models import Q, Count
 from .models import Trabajador, Rol, Bus, EstadoBus, AsignacionRol, AsignacionBus
 from .forms import (
     TrabajadorForm, RolForm, BusForm, EstadoBusForm, 
     AsignacionRolForm, AsignacionBusForm
 )
 
-# ==================== VISTAS GENERALES ====================
+# ==================== AUTENTICACIÓN ====================
 
+def login_view(request):
+    """Vista de login"""
+    if request.user.is_authenticated:
+        return redirect('index')
+    
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'¡Bienvenido {username}!')
+                next_page = request.GET.get('next', 'index')
+                return redirect(next_page)
+            else:
+                messages.error(request, 'Usuario o contraseña incorrectos.')
+        else:
+            messages.error(request, 'Usuario o contraseña incorrectos.')
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, 'templatesApp/login.html', {'form': form})
+
+
+def logout_view(request):
+    """Vista de logout"""
+    logout(request)
+    messages.info(request, 'Has cerrado sesión exitosamente.')
+    return redirect('login')
+
+
+# ==================== DASHBOARD ====================
+
+@login_required(login_url='login')
 def index(request):
-    # Dashboard con estadísticas
+    """Dashboard con estadísticas"""
     context = {
         'total_trabajadores': Trabajador.objects.filter(activo=True).count(),
         'total_buses': Bus.objects.filter(activo=True).count(),
         'total_roles': Rol.objects.filter(activo=True).count(),
         'buses_operativos': EstadoBus.objects.filter(estado='OPERATIVO').count(),
-        'asignaciones_activas': AsignacionBus.objects.filter(activo=True).count(),
+        'asignaciones_activas_bus': AsignacionBus.objects.filter(activo=True).count(),
+        'asignaciones_activas_rol': AsignacionRol.objects.filter(activo=True).count(),
+        'user': request.user,
     }
     return render(request, 'templatesApp/index.html', context)
-
-def login1(request):
-    return render(request, 'templatesApp/login.html')
 
 
 # ==================== CRUD TRABAJADORES ====================
 
+@login_required(login_url='login')
 def trabajadores_list(request):
-    # Búsqueda
     search_query = request.GET.get('search', '')
     trabajadores_data = Trabajador.objects.all()
     
@@ -41,18 +80,15 @@ def trabajadores_list(request):
             Q(contacto__icontains=search_query)
         )
     
-    # Filtro por activo/inactivo
     estado_filter = request.GET.get('estado', '')
     if estado_filter == 'activo':
         trabajadores_data = trabajadores_data.filter(activo=True)
     elif estado_filter == 'inactivo':
         trabajadores_data = trabajadores_data.filter(activo=False)
     
-    # Ordenamiento
     trabajadores_data = trabajadores_data.order_by('apellido', 'nombre')
     
-    # Paginación
-    paginator = Paginator(trabajadores_data, 10)  # 10 por página
+    paginator = Paginator(trabajadores_data, 10)
     page = request.GET.get('page')
     
     try:
@@ -70,11 +106,11 @@ def trabajadores_list(request):
     return render(request, 'templatesApp/trabajadores.html', context)
 
 
+@login_required(login_url='login')
 def trabajador_detalle(request, pk):
     trabajador = get_object_or_404(Trabajador, pk=pk)
-    # Obtener asignaciones del trabajador
-    asignaciones_rol = AsignacionRol.objects.filter(trabajador_id=pk)
-    asignaciones_bus = AsignacionBus.objects.filter(trabajador_id=pk)
+    asignaciones_rol = trabajador.asignaciones_rol.all().order_by('-fecha_asignacion')
+    asignaciones_bus = trabajador.asignaciones_bus.all().order_by('-fecha_asignacion')
     
     context = {
         'trabajador': trabajador,
@@ -84,6 +120,7 @@ def trabajador_detalle(request, pk):
     return render(request, 'templatesApp/trabajador_detalle.html', context)
 
 
+@login_required(login_url='login')
 def trabajador_crear(request):
     if request.method == 'POST':
         form = TrabajadorForm(request.POST)
@@ -99,6 +136,7 @@ def trabajador_crear(request):
     return render(request, 'templatesApp/trabajador_form.html', {'form': form, 'accion': 'Crear'})
 
 
+@login_required(login_url='login')
 def trabajador_editar(request, pk):
     trabajador = get_object_or_404(Trabajador, pk=pk)
     
@@ -120,23 +158,48 @@ def trabajador_editar(request, pk):
     })
 
 
+@login_required(login_url='login')
 def trabajador_eliminar(request, pk):
     trabajador = get_object_or_404(Trabajador, pk=pk)
     
     if request.method == 'POST':
         nombre_completo = f"{trabajador.nombre} {trabajador.apellido}"
+        
+        asignaciones_activas = (
+            trabajador.asignaciones_rol.filter(activo=True).count() +
+            trabajador.asignaciones_bus.filter(activo=True).count()
+        )
+        
+        if asignaciones_activas > 0:
+            messages.warning(
+                request, 
+                f'No se puede eliminar a {nombre_completo} porque tiene {asignaciones_activas} asignaciones activas.'
+            )
+            return redirect('trabajador_detalle', pk=pk)
+        
         trabajador.delete()
         messages.success(request, f'Trabajador {nombre_completo} eliminado exitosamente.')
         return redirect('trabajadores_list')
     
-    return render(request, 'templatesApp/trabajador_confirm_delete.html', {'trabajador': trabajador})
+    asignaciones_count = (
+        trabajador.asignaciones_rol.count() + trabajador.asignaciones_bus.count()
+    )
+    
+    context = {
+        'trabajador': trabajador,
+        'asignaciones_count': asignaciones_count
+    }
+    return render(request, 'templatesApp/trabajador_confirm_delete.html', context)
 
 
 # ==================== CRUD ROLES ====================
 
+@login_required(login_url='login')
 def roles_list(request):
     search_query = request.GET.get('search', '')
-    roles_data = Rol.objects.all()
+    roles_data = Rol.objects.annotate(
+        num_asignaciones=Count('asignaciones', filter=Q(asignaciones__activo=True))
+    )
     
     if search_query:
         roles_data = roles_data.filter(nombre__icontains=search_query)
@@ -167,9 +230,10 @@ def roles_list(request):
     return render(request, 'templatesApp/roles.html', context)
 
 
+@login_required(login_url='login')
 def rol_detalle(request, pk):
     rol = get_object_or_404(Rol, pk=pk)
-    asignaciones = AsignacionRol.objects.filter(rol_id=pk)
+    asignaciones = rol.asignaciones.all().order_by('-fecha_asignacion')
     
     context = {
         'rol': rol,
@@ -178,6 +242,7 @@ def rol_detalle(request, pk):
     return render(request, 'templatesApp/rol_detalle.html', context)
 
 
+@login_required(login_url='login')
 def rol_crear(request):
     if request.method == 'POST':
         form = RolForm(request.POST)
@@ -193,6 +258,7 @@ def rol_crear(request):
     return render(request, 'templatesApp/rol_form.html', {'form': form, 'accion': 'Crear'})
 
 
+@login_required(login_url='login')
 def rol_editar(request, pk):
     rol = get_object_or_404(Rol, pk=pk)
     
@@ -214,20 +280,38 @@ def rol_editar(request, pk):
     })
 
 
+@login_required(login_url='login')
 def rol_eliminar(request, pk):
     rol = get_object_or_404(Rol, pk=pk)
     
     if request.method == 'POST':
         nombre = rol.nombre
+        
+        asignaciones_activas = rol.asignaciones.filter(activo=True).count()
+        
+        if asignaciones_activas > 0:
+            messages.warning(
+                request, 
+                f'No se puede eliminar el rol "{nombre}" porque tiene {asignaciones_activas} asignaciones activas.'
+            )
+            return redirect('rol_detalle', pk=pk)
+        
         rol.delete()
         messages.success(request, f'Rol "{nombre}" eliminado exitosamente.')
         return redirect('roles_list')
     
-    return render(request, 'templatesApp/rol_confirm_delete.html', {'rol': rol})
+    asignaciones_count = rol.asignaciones.count()
+    
+    context = {
+        'rol': rol,
+        'asignaciones_count': asignaciones_count
+    }
+    return render(request, 'templatesApp/rol_confirm_delete.html', context)
 
 
 # ==================== CRUD BUSES ====================
 
+@login_required(login_url='login')
 def buses_list(request):
     search_query = request.GET.get('search', '')
     buses_data = Bus.objects.all()
@@ -265,14 +349,11 @@ def buses_list(request):
     return render(request, 'templatesApp/buses.html', context)
 
 
+@login_required(login_url='login')
 def bus_detalle(request, pk):
     bus = get_object_or_404(Bus, pk=pk)
-    try:
-        estado = EstadoBus.objects.get(bus_patente=bus.patente)
-    except EstadoBus.DoesNotExist:
-        estado = None
-    
-    asignaciones = AsignacionBus.objects.filter(bus_id=pk)
+    estado = bus.get_estado_actual()
+    asignaciones = bus.asignaciones.all().order_by('-fecha_asignacion')
     
     context = {
         'bus': bus,
@@ -282,6 +363,7 @@ def bus_detalle(request, pk):
     return render(request, 'templatesApp/bus_detalle.html', context)
 
 
+@login_required(login_url='login')
 def bus_crear(request):
     if request.method == 'POST':
         form = BusForm(request.POST)
@@ -297,6 +379,7 @@ def bus_crear(request):
     return render(request, 'templatesApp/bus_form.html', {'form': form, 'accion': 'Crear'})
 
 
+@login_required(login_url='login')
 def bus_editar(request, pk):
     bus = get_object_or_404(Bus, pk=pk)
     
@@ -318,28 +401,46 @@ def bus_editar(request, pk):
     })
 
 
+@login_required(login_url='login')
 def bus_eliminar(request, pk):
     bus = get_object_or_404(Bus, pk=pk)
     
     if request.method == 'POST':
         patente = bus.patente
+        
+        asignaciones_activas = bus.asignaciones.filter(activo=True).count()
+        
+        if asignaciones_activas > 0:
+            messages.warning(
+                request, 
+                f'No se puede eliminar el bus {patente} porque tiene {asignaciones_activas} asignaciones activas.'
+            )
+            return redirect('bus_detalle', pk=pk)
+        
         bus.delete()
         messages.success(request, f'Bus {patente} eliminado exitosamente.')
         return redirect('buses_list')
     
-    return render(request, 'templatesApp/bus_confirm_delete.html', {'bus': bus})
+    asignaciones_count = bus.asignaciones.count()
+    
+    context = {
+        'bus': bus,
+        'asignaciones_count': asignaciones_count
+    }
+    return render(request, 'templatesApp/bus_confirm_delete.html', context)
 
 
 # ==================== CRUD ESTADO BUS ====================
 
+@login_required(login_url='login')
 def estados_bus_list(request):
     search_query = request.GET.get('search', '')
-    estados_data = EstadoBus.objects.all()
+    estados_data = EstadoBus.objects.select_related('bus')
     
     if search_query:
         estados_data = estados_data.filter(
-            Q(bus_patente__icontains=search_query) |
-            Q(bus_modelo__icontains=search_query)
+            Q(bus__patente__icontains=search_query) |
+            Q(bus__modelo__icontains=search_query)
         )
     
     estado_filter = request.GET.get('estado', '')
@@ -362,21 +463,24 @@ def estados_bus_list(request):
         'estados': estados,
         'search_query': search_query,
         'estado_filter': estado_filter,
+        'estados_choices': EstadoBus.ESTADOS_CHOICES,
     }
     return render(request, 'templatesApp/estados_bus.html', context)
 
 
+@login_required(login_url='login')
 def estado_bus_detalle(request, pk):
-    estado = get_object_or_404(EstadoBus, pk=pk)
+    estado = get_object_or_404(EstadoBus.objects.select_related('bus'), pk=pk)
     return render(request, 'templatesApp/estado_bus_detalle.html', {'estado': estado})
 
 
+@login_required(login_url='login')
 def estado_bus_crear(request):
     if request.method == 'POST':
         form = EstadoBusForm(request.POST)
         if form.is_valid():
             estado = form.save()
-            messages.success(request, f'Estado del bus {estado.bus_patente} registrado exitosamente.')
+            messages.success(request, f'Estado del bus {estado.bus.patente} registrado exitosamente.')
             return redirect('estados_bus_list')
         else:
             messages.error(request, 'Por favor corrija los errores del formulario.')
@@ -386,6 +490,7 @@ def estado_bus_crear(request):
     return render(request, 'templatesApp/estado_bus_form.html', {'form': form, 'accion': 'Crear'})
 
 
+@login_required(login_url='login')
 def estado_bus_editar(request, pk):
     estado = get_object_or_404(EstadoBus, pk=pk)
     
@@ -393,7 +498,7 @@ def estado_bus_editar(request, pk):
         form = EstadoBusForm(request.POST, instance=estado)
         if form.is_valid():
             estado = form.save()
-            messages.success(request, f'Estado del bus {estado.bus_patente} actualizado exitosamente.')
+            messages.success(request, f'Estado del bus {estado.bus.patente} actualizado exitosamente.')
             return redirect('estado_bus_detalle', pk=estado.pk)
         else:
             messages.error(request, 'Por favor corrija los errores del formulario.')
@@ -407,11 +512,12 @@ def estado_bus_editar(request, pk):
     })
 
 
+@login_required(login_url='login')
 def estado_bus_eliminar(request, pk):
     estado = get_object_or_404(EstadoBus, pk=pk)
     
     if request.method == 'POST':
-        patente = estado.bus_patente
+        patente = estado.bus.patente
         estado.delete()
         messages.success(request, f'Estado del bus {patente} eliminado exitosamente.')
         return redirect('estados_bus_list')
@@ -421,15 +527,16 @@ def estado_bus_eliminar(request, pk):
 
 # ==================== CRUD ASIGNACIÓN ROL ====================
 
+@login_required(login_url='login')
 def asignaciones_rol_list(request):
     search_query = request.GET.get('search', '')
-    asignaciones_data = AsignacionRol.objects.all()
+    asignaciones_data = AsignacionRol.objects.select_related('trabajador', 'rol')
     
     if search_query:
         asignaciones_data = asignaciones_data.filter(
-            Q(trabajador_nombre__icontains=search_query) |
-            Q(trabajador_apellido__icontains=search_query) |
-            Q(rol_nombre__icontains=search_query)
+            Q(trabajador__nombre__icontains=search_query) |
+            Q(trabajador__apellido__icontains=search_query) |
+            Q(rol__nombre__icontains=search_query)
         )
     
     estado_filter = request.GET.get('estado', '')
@@ -458,33 +565,35 @@ def asignaciones_rol_list(request):
     return render(request, 'templatesApp/asignaciones_rol.html', context)
 
 
+@login_required(login_url='login')
 def asignacion_rol_detalle(request, pk):
-    asignacion = get_object_or_404(AsignacionRol, pk=pk)
+    asignacion = get_object_or_404(
+        AsignacionRol.objects.select_related('trabajador', 'rol'), 
+        pk=pk
+    )
     return render(request, 'templatesApp/asignacion_rol_detalle.html', {'asignacion': asignacion})
 
 
+@login_required(login_url='login')
 def asignacion_rol_crear(request):
     if request.method == 'POST':
         form = AsignacionRolForm(request.POST)
         if form.is_valid():
             asignacion = form.save()
-            messages.success(request, f'Rol asignado exitosamente a {asignacion.trabajador_nombre}.')
+            messages.success(request, f'Rol "{asignacion.rol.nombre}" asignado exitosamente a {asignacion.trabajador}.')
             return redirect('asignaciones_rol_list')
         else:
             messages.error(request, 'Por favor corrija los errores del formulario.')
     else:
         form = AsignacionRolForm()
     
-    # Pasar listas de trabajadores y roles para ayudar al usuario
-    context = {
+    return render(request, 'templatesApp/asignacion_rol_form.html', {
         'form': form,
-        'accion': 'Crear',
-        'trabajadores': Trabajador.objects.filter(activo=True),
-        'roles': Rol.objects.filter(activo=True),
-    }
-    return render(request, 'templatesApp/asignacion_rol_form.html', context)
+        'accion': 'Crear'
+    })
 
 
+@login_required(login_url='login')
 def asignacion_rol_editar(request, pk):
     asignacion = get_object_or_404(AsignacionRol, pk=pk)
     
@@ -499,16 +608,14 @@ def asignacion_rol_editar(request, pk):
     else:
         form = AsignacionRolForm(instance=asignacion)
     
-    context = {
+    return render(request, 'templatesApp/asignacion_rol_form.html', {
         'form': form,
         'accion': 'Editar',
-        'asignacion': asignacion,
-        'trabajadores': Trabajador.objects.filter(activo=True),
-        'roles': Rol.objects.filter(activo=True),
-    }
-    return render(request, 'templatesApp/asignacion_rol_form.html', context)
+        'asignacion': asignacion
+    })
 
 
+@login_required(login_url='login')
 def asignacion_rol_eliminar(request, pk):
     asignacion = get_object_or_404(AsignacionRol, pk=pk)
     
@@ -522,15 +629,16 @@ def asignacion_rol_eliminar(request, pk):
 
 # ==================== CRUD ASIGNACIÓN BUS ====================
 
+@login_required(login_url='login')
 def asignaciones_bus_list(request):
     search_query = request.GET.get('search', '')
-    asignaciones_data = AsignacionBus.objects.all()
+    asignaciones_data = AsignacionBus.objects.select_related('trabajador', 'bus')
     
     if search_query:
         asignaciones_data = asignaciones_data.filter(
-            Q(trabajador_nombre__icontains=search_query) |
-            Q(trabajador_apellido__icontains=search_query) |
-            Q(bus_patente__icontains=search_query)
+            Q(trabajador__nombre__icontains=search_query) |
+            Q(trabajador__apellido__icontains=search_query) |
+            Q(bus__patente__icontains=search_query)
         )
     
     estado_filter = request.GET.get('estado', '')
@@ -560,36 +668,40 @@ def asignaciones_bus_list(request):
         'search_query': search_query,
         'estado_filter': estado_filter,
         'turno_filter': turno_filter,
+        'turnos_choices': AsignacionBus.TURNO_CHOICES,
     }
     return render(request, 'templatesApp/asignaciones_bus.html', context)
 
 
+@login_required(login_url='login')
 def asignacion_bus_detalle(request, pk):
-    asignacion = get_object_or_404(AsignacionBus, pk=pk)
+    asignacion = get_object_or_404(
+        AsignacionBus.objects.select_related('trabajador', 'bus'), 
+        pk=pk
+    )
     return render(request, 'templatesApp/asignacion_bus_detalle.html', {'asignacion': asignacion})
 
 
+@login_required(login_url='login')
 def asignacion_bus_crear(request):
     if request.method == 'POST':
         form = AsignacionBusForm(request.POST)
         if form.is_valid():
             asignacion = form.save()
-            messages.success(request, f'Bus {asignacion.bus_patente} asignado exitosamente a {asignacion.trabajador_nombre}.')
+            messages.success(request, f'Bus {asignacion.bus.patente} asignado exitosamente a {asignacion.trabajador}.')
             return redirect('asignaciones_bus_list')
         else:
             messages.error(request, 'Por favor corrija los errores del formulario.')
     else:
         form = AsignacionBusForm()
     
-    context = {
+    return render(request, 'templatesApp/asignacion_bus_form.html', {
         'form': form,
-        'accion': 'Crear',
-        'trabajadores': Trabajador.objects.filter(activo=True),
-        'buses': Bus.objects.filter(activo=True),
-    }
-    return render(request, 'templatesApp/asignacion_bus_form.html', context)
+        'accion': 'Crear'
+    })
 
 
+@login_required(login_url='login')
 def asignacion_bus_editar(request, pk):
     asignacion = get_object_or_404(AsignacionBus, pk=pk)
     
@@ -604,16 +716,14 @@ def asignacion_bus_editar(request, pk):
     else:
         form = AsignacionBusForm(instance=asignacion)
     
-    context = {
+    return render(request, 'templatesApp/asignacion_bus_form.html', {
         'form': form,
         'accion': 'Editar',
-        'asignacion': asignacion,
-        'trabajadores': Trabajador.objects.filter(activo=True),
-        'buses': Bus.objects.filter(activo=True),
-    }
-    return render(request, 'templatesApp/asignacion_bus_form.html', context)
+        'asignacion': asignacion
+    })
 
 
+@login_required(login_url='login')
 def asignacion_bus_eliminar(request, pk):
     asignacion = get_object_or_404(AsignacionBus, pk=pk)
     

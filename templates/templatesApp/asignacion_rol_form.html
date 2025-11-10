@@ -1,206 +1,288 @@
 {% extends 'templatesApp/base.html' %}
+{% load static %}
 
-{% block title %}{% if accion == 'Crear' %}Crear Asignación de Rol{% else %}Editar Asignación de Rol{% endif %} - Sistema de Gestión{% endblock %}
+{% block title %}{{ accion }} Asignación de Rol - Sistema de Buses{% endblock %}
+
+{% block page_title %}{{ accion }} Asignación de Rol{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'asignaciones_rol_list' %}">Asignaciones de Rol</a></li>
+    <li class="breadcrumb-item active">{{ accion }}</li>
+{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
-                <li class="breadcrumb-item"><a href="{% url 'asignaciones_rol_list' %}">Asignaciones de Roles</a></li>
-                <li class="breadcrumb-item active">{{ accion }}</li>
-            </ol>
-        </nav>
-
-        <!-- Encabezado de página -->
-        <div class="page-header">
-            <h1>
-                <i class="fas fa-link"></i>
-                {% if accion == 'Crear' %}Crear Nueva Asignación de Rol{% else %}Editar Asignación de Rol{% endif %}
-            </h1>
-        </div>
-
-        <!-- Tarjeta del formulario -->
-        <div class="card">
-            <div class="card-header">
-                <i class="fas fa-edit"></i> Formulario de Asignación de Rol
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow-sm">
+            <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-check-fill"></i> {{ accion }} Asignación de Rol
+                </h4>
             </div>
-            <div class="card-body">
+            
+            <div class="card-body p-4">
+                <!-- Errores generales del formulario -->
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        {{ form.non_field_errors }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endif %}
+                
                 <form method="post" novalidate>
                     {% csrf_token %}
                     
-                    <!-- Información del Trabajador -->
-                    <div class="mb-3">
-                        <h5 class="mb-3">
-                            <i class="fas fa-user"></i> Información del Trabajador
-                        </h5>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_trabajador_id" class="form-label">
-                                    <i class="fas fa-hashtag"></i> {{ form.trabajador_id.label }}
-                                </label>
-                                {{ form.trabajador_id }}
-                                {% if form.trabajador_id.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.trabajador_id.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
+                    <!-- SECCIÓN: Información del Trabajador -->
+                    <div class="card mb-4 border-primary">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person-fill"></i> Información del Trabajador
+                            </h5>
                         </div>
-
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_trabajador_nombre" class="form-label">
-                                    <i class="fas fa-user"></i> {{ form.trabajador_nombre.label }}
-                                </label>
-                                {{ form.trabajador_nombre }}
-                                {% if form.trabajador_nombre.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.trabajador_nombre.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="{{ form.trabajador.id_for_label }}" class="form-label fw-bold">
+                                        {{ form.trabajador.label }}
+                                        {% if form.trabajador.field.required %}
+                                            <span class="text-danger">*</span>
+                                        {% endif %}
+                                    </label>
+                                    {{ form.trabajador }}
+                                    
+                                    {% if form.trabajador.help_text %}
+                                        <div class="form-text">
+                                            <i class="bi bi-info-circle"></i> {{ form.trabajador.help_text }}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if form.trabajador.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.trabajador.errors %}
+                                                <i class="bi bi-exclamation-circle"></i> {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_trabajador_apellido" class="form-label">
-                                    <i class="fas fa-user"></i> {{ form.trabajador_apellido.label }}
-                                </label>
-                                {{ form.trabajador_apellido }}
-                                {% if form.trabajador_apellido.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.trabajador_apellido.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
+                            
+                            <!-- Información adicional si estamos editando -->
+                            {% if asignacion %}
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    <strong>Trabajador actual:</strong> {{ asignacion.trabajador }}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
-
-                    <!-- Información del Rol -->
-                    <div class="mb-3 mt-4">
-                        <h5 class="mb-3">
-                            <i class="fas fa-briefcase"></i> Información del Rol
-                        </h5>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="id_rol_id" class="form-label">
-                                    <i class="fas fa-hashtag"></i> {{ form.rol_id.label }}
-                                </label>
-                                {{ form.rol_id }}
-                                {% if form.rol_id.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.rol_id.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
+                    
+                    <!-- SECCIÓN: Información del Rol -->
+                    <div class="card mb-4 border-success">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-briefcase-fill"></i> Información del Rol
+                            </h5>
                         </div>
-
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label for="id_rol_nombre" class="form-label">
-                                    <i class="fas fa-briefcase"></i> {{ form.rol_nombre.label }}
-                                </label>
-                                {{ form.rol_nombre }}
-                                {% if form.rol_nombre.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.rol_nombre.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="{{ form.rol.id_for_label }}" class="form-label fw-bold">
+                                        {{ form.rol.label }}
+                                        {% if form.rol.field.required %}
+                                            <span class="text-danger">*</span>
+                                        {% endif %}
+                                    </label>
+                                    {{ form.rol }}
+                                    
+                                    {% if form.rol.help_text %}
+                                        <div class="form-text">
+                                            <i class="bi bi-info-circle"></i> {{ form.rol.help_text }}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if form.rol.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.rol.errors %}
+                                                <i class="bi bi-exclamation-circle"></i> {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Fechas -->
-                    <div class="mb-3 mt-4">
-                        <h5 class="mb-3">
-                            <i class="fas fa-calendar"></i> Fechas
-                        </h5>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="id_fecha_finalizacion" class="form-label">
-                                    <i class="fas fa-calendar-check"></i> {{ form.fecha_finalizacion.label }}
-                                </label>
-                                {{ form.fecha_finalizacion }}
-                                {% if form.fecha_finalizacion.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.fecha_finalizacion.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <div class="mb-3 form-check" style="margin-top: 32px;">
-                                {{ form.activo }}
-                                <label for="id_activo" class="form-check-label">
-                                    <i class="fas fa-check-circle"></i> {{ form.activo.label }}
-                                </label>
-                                {% if form.activo.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {% for error in form.activo.errors %}
-                                            <i class="fas fa-exclamation-circle"></i> {{ error }}<br>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
+                            
+                            <!-- Información adicional si estamos editando -->
+                            {% if asignacion %}
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    <strong>Rol actual:</strong> {{ asignacion.rol }}
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
-
-                    <!-- Errores generales del formulario -->
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger" role="alert">
-                            <i class="fas fa-times-circle"></i> <strong>Errores en el formulario:</strong>
-                            {% for error in form.non_field_errors %}
-                                <div>{{ error }}</div>
-                            {% endfor %}
+                    
+                    <!-- SECCIÓN: Fechas -->
+                    <div class="card mb-4 border-warning">
+                        <div class="card-header bg-warning">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calendar-event-fill"></i> Fechas
+                            </h5>
                         </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.fecha_finalizacion.id_for_label }}" class="form-label fw-bold">
+                                        {{ form.fecha_finalizacion.label }}
+                                        {% if form.fecha_finalizacion.field.required %}
+                                            <span class="text-danger">*</span>
+                                        {% endif %}
+                                    </label>
+                                    {{ form.fecha_finalizacion }}
+                                    
+                                    {% if form.fecha_finalizacion.help_text %}
+                                        <div class="form-text">
+                                            <i class="bi bi-info-circle"></i> {{ form.fecha_finalizacion.help_text }}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if form.fecha_finalizacion.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.fecha_finalizacion.errors %}
+                                                <i class="bi bi-exclamation-circle"></i> {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check form-switch" style="margin-top: 40px;">
+                                        {{ form.activo }}
+                                        <label class="form-check-label fw-bold" for="{{ form.activo.id_for_label }}">
+                                            {{ form.activo.label }}
+                                        </label>
+                                        
+                                        {% if form.activo.help_text %}
+                                            <div class="form-text">
+                                                <i class="bi bi-info-circle"></i> {{ form.activo.help_text }}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        {% if form.activo.errors %}
+                                            <div class="invalid-feedback d-block">
+                                                {% for error in form.activo.errors %}
+                                                    <i class="bi bi-exclamation-circle"></i> {{ error }}
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% if asignacion and asignacion.fecha_asignacion %}
+                                <div class="alert alert-secondary">
+                                    <i class="bi bi-calendar-check"></i>
+                                    <strong>Fecha de asignación:</strong> {{ asignacion.fecha_asignacion|date:"d/m/Y" }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- SECCIÓN: Notas (si el campo existe) -->
+                    {% if form.notas %}
+                    <div class="card mb-4 border-info">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-sticky-fill"></i> Notas Adicionales
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 mb-3">
+                                    <label for="{{ form.notas.id_for_label }}" class="form-label fw-bold">
+                                        {{ form.notas.label }}
+                                    </label>
+                                    {{ form.notas }}
+                                    
+                                    {% if form.notas.help_text %}
+                                        <div class="form-text">
+                                            <i class="bi bi-info-circle"></i> {{ form.notas.help_text }}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if form.notas.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.notas.errors %}
+                                                <i class="bi bi-exclamation-circle"></i> {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% endif %}
-
+                    
                     <!-- Botones de acción -->
-                    <div class="d-flex gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-save"></i> 
-                            {% if accion == 'Crear' %}Crear Asignación{% else %}Guardar Cambios{% endif %}
-                        </button>
-                        <a href="{% url 'asignaciones_rol_list' %}" class="btn btn-secondary btn-lg">
-                            <i class="fas fa-arrow-left"></i> Cancelar
-                        </a>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="{% url 'asignaciones_rol_list' %}" class="btn btn-secondary btn-lg">
+                                    <i class="bi bi-arrow-left"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-save"></i> {{ accion }} Asignación
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
-
-        <!-- Información adicional -->
-        <div class="row mt-4">
-            <div class="col-md-8">
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    <strong>Nota:</strong> Todos los campos marcados con <span class="text-danger">*</span> son obligatorios.
-                </div>
+        
+        <!-- Ayuda adicional -->
+        <div class="card mt-4 border-0" style="background-color: #f8f9fa;">
+            <div class="card-body">
+                <h6 class="text-muted">
+                    <i class="bi bi-lightbulb"></i> Consejos:
+                </h6>
+                <ul class="text-muted small mb-0">
+                    <li>Seleccione el trabajador y el rol que desea asignar</li>
+                    <li>La fecha de finalización es opcional</li>
+                    <li>Marque "Asignación Activa" si la asignación está vigente</li>
+                    <li>Los campos marcados con <span class="text-danger">*</span> son obligatorios</li>
+                </ul>
             </div>
         </div>
     </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+        padding: 10px 15px;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+    
+    .form-check-input {
+        width: 3em;
+        height: 1.5em;
+        cursor: pointer;
+    }
+    
+    .card-header {
+        border-radius: 8px 8px 0 0 !important;
+    }
+    
+    .btn-lg {
+        padding: 12px 30px;
+        border-radius: 8px;
+    }
+</style>
 {% endblock %}

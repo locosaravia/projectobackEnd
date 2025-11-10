@@ -33,19 +33,19 @@
                                 <div class="detalle-item">
                                     <div class="detalle-label">ID Trabajador:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.trabajador_id }}
+                                        {{ asignacion.trabajador.id }}
                                     </div>
                                 </div>
                                 <div class="detalle-item">
                                     <div class="detalle-label">Nombre Trabajador:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.trabajador_nombre }}
+                                        {{ asignacion.trabajador.nombre }}
                                     </div>
                                 </div>
                                 <div class="detalle-item">
                                     <div class="detalle-label">Apellido Trabajador:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.trabajador_apellido }}
+                                        {{ asignacion.trabajador.apellido }}
                                     </div>
                                 </div>
                             </div>
@@ -53,19 +53,19 @@
                                 <div class="detalle-item">
                                     <div class="detalle-label">ID Bus:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.bus_id }}
+                                        {{ asignacion.bus.id }}
                                     </div>
                                 </div>
                                 <div class="detalle-item">
                                     <div class="detalle-label">Patente Bus:</div>
                                     <div class="detalle-valor">
-                                        <strong>{{ asignacion.bus_patente }}</strong>
+                                        <strong>{{ asignacion.bus.patente }}</strong>
                                     </div>
                                 </div>
                                 <div class="detalle-item">
                                     <div class="detalle-label">Modelo Bus:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.bus_modelo }}
+                                        {{ asignacion.bus.modelo }}
                                     </div>
                                 </div>
                             </div>
@@ -128,6 +128,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        {% if asignacion.notas %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Notas:</div>
+                                    <div class="detalle-valor">
+                                        {{ asignacion.notas }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -164,9 +178,9 @@
                     </div>
                     <div class="card-body">
                         <p><strong>ID Asignación:</strong> {{ asignacion.id }}</p>
-                        <p><strong>Trabajador:</strong> {{ asignacion.trabajador_nombre }} {{ asignacion.trabajador_apellido }}</p>
-                        <p><strong>Bus:</strong> {{ asignacion.bus_patente }}</p>
-                        <p><strong>Turno:</strong> {{ asignacion.turno }}</p>
+                        <p><strong>Trabajador:</strong> {{ asignacion.trabajador }}</p>
+                        <p><strong>Bus:</strong> {{ asignacion.bus.patente }}</p>
+                        <p><strong>Turno:</strong> {{ asignacion.get_turno_display }}</p>
                     </div>
                 </div>
             </div>

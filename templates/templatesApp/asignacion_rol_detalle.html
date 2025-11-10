@@ -33,19 +33,19 @@
                                 <div class="detalle-item">
                                     <div class="detalle-label">ID Trabajador:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.trabajador_id }}
+                                        {{ asignacion.trabajador.id }}
                                     </div>
                                 </div>
                                 <div class="detalle-item">
                                     <div class="detalle-label">Nombre Trabajador:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.trabajador_nombre }}
+                                        {{ asignacion.trabajador.nombre }}
                                     </div>
                                 </div>
                                 <div class="detalle-item">
                                     <div class="detalle-label">Apellido Trabajador:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.trabajador_apellido }}
+                                        {{ asignacion.trabajador.apellido }}
                                     </div>
                                 </div>
                             </div>
@@ -53,13 +53,19 @@
                                 <div class="detalle-item">
                                     <div class="detalle-label">ID Rol:</div>
                                     <div class="detalle-valor">
-                                        {{ asignacion.rol_id }}
+                                        {{ asignacion.rol.id }}
                                     </div>
                                 </div>
                                 <div class="detalle-item">
                                     <div class="detalle-label">Rol Asignado:</div>
                                     <div class="detalle-valor">
-                                        <strong>{{ asignacion.rol_nombre }}</strong>
+                                        <strong>{{ asignacion.rol.nombre }}</strong>
+                                    </div>
+                                </div>
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Nivel de Acceso:</div>
+                                    <div class="detalle-valor">
+                                        <span class="badge bg-info">Nivel {{ asignacion.rol.nivel_acceso }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -108,6 +114,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        {% if asignacion.notas %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="detalle-item">
+                                    <div class="detalle-label">Notas:</div>
+                                    <div class="detalle-valor">
+                                        {{ asignacion.notas }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -144,8 +164,8 @@
                     </div>
                     <div class="card-body">
                         <p><strong>ID Asignación:</strong> {{ asignacion.id }}</p>
-                        <p><strong>Trabajador:</strong> {{ asignacion.trabajador_nombre }} {{ asignacion.trabajador_apellido }}</p>
-                        <p><strong>Rol:</strong> {{ asignacion.rol_nombre }}</p>
+                        <p><strong>Trabajador:</strong> {{ asignacion.trabajador }}</p>
+                        <p><strong>Rol:</strong> {{ asignacion.rol.nombre }}</p>
                     </div>
                 </div>
             </div>
